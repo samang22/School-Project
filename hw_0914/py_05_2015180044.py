@@ -30,8 +30,10 @@ Mode = True
 angle = 0
 rad = 0
 frame = 0
+speed = 0
 button = False
-while (True):
+running = True
+while (True == running):
     clear_canvas()
     grass.draw(400, 30)
     character.clip_draw(frame * 100, 0, 100, 100, x, y)
@@ -82,6 +84,8 @@ while (True):
         elif (angle == 360):
             angle = 0
             Mode = True
+    handle_events()
+    
             
 # fill here
     
