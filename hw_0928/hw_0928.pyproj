@@ -32,6 +32,9 @@
     <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="show_files.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="title_state.py">
       <SubType>Code</SubType>
     </Compile>
