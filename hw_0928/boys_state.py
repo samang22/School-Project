@@ -1,7 +1,8 @@
 from pico2d import *
 import game_framework
 import random
-from enum import Enum
+import title_state
+
 class Grass:
     def __init__(self):
         self.image = load_image('../res/grass.png')
@@ -9,41 +10,24 @@ class Grass:
     def draw(self):
         self.image.draw(400, 30)
 
-
-
 class Boy:
     def __init__(self):
         print("Creating..")
-        # self.state = self.State.s1
         self.x = random.randint(0, 200)
         self.y = random.randint(90, 550)
         self.speed = random.uniform(1.0, 3.0)
         self.frame = random.randint(0, 7)
         self.waypoints = []
-        #self.image = load_image('../res/run_animation.png')
-        self.image = None
-        self.wp = None
-        self.isRun = False
-        self.isLeft = False
-        self.state = 0
+        self.image = load_image('../res/run_animation.png')
+        self.wp = load_image('../res/wp.png')
     def draw(self):
         for wp in self.waypoints:
             self.wp.draw(wp[0], wp[1])
-
-
-
-        self.image.clip_draw(self.frame * 100, self.state * 100, 100, 100, self.x, self.y)
+        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
     def update(self):
         self.frame = (self.frame + 1) % 8
-
         if len(self.waypoints) > 0:
             tx, ty = self.waypoints[0]
-            self.isRun = True
-            if tx > self.x:
-                self.isLeft = False
-            else:
-                self.isLeft = True
-
             dx, dy = tx - self.x, ty - self.y
             dist = math.sqrt(dx ** 2 + dy ** 2)
             if dist > 0:
@@ -57,24 +41,6 @@ class Boy:
 
                 if (tx, ty) == (self.x, self.y):
                     del self.waypoints[0]
-        else:
-            self.isRun = False
-
-        if self.isRun == True:
-            if self.isLeft == True:
-                self.state = 0
-            else:
-                self.state = 1
-        else:
-            if self.isLeft == True:
-                self.state = 2
-            else:
-                self.state = 3
-#boyimage = load_image('../res/run_animation.png')
-#wpimage = load_image('../res/wp.png')
-
-boyimage = None
-wpimage = None
 
 span = 50
 def handle_events():
@@ -83,10 +49,10 @@ def handle_events():
     events = get_events()
     for e in events:
         if e.type == SDL_QUIT:
-            game_framework.quit()
+            game_framework.change_state(title_state)
         elif e.type == SDL_KEYDOWN:
             if e.key == SDLK_ESCAPE:
-                game_framework.pop_state()
+                game_framework.change_state(title_state)
             elif e.key in range(SDLK_1, SDLK_9 + 1):
                 span = 20 * (e.key - SDLK_0)
 
@@ -102,51 +68,31 @@ def handle_events():
                     b.waypoints = []
 
 def enter():
-    global boys, grass, boyimage, wpimage
+    global boys, grass
+    open_canvas()
 
-    boys = [ Boy() for i in range(1000) ]
+    boys = [ Boy() for i in range(10) ]
     grass = Grass()
-    boyimage = load_image('../res/animation_sheet.png')
-    wpimage = load_image('../res/wp.png')
 
-
-# def main():
-#     global running
-#     enter()
-#     while running:
-#         handle_events()
-#         print(running)
-#         update()
-#         draw()
-#     exit()
 
 def draw():
     global grass, boys
     clear_canvas()
     grass.draw()
     for b in boys:
-        if b.image != None:
-            b.draw()
+        b.draw()
     update_canvas()
 
 def update():
     global boys
     for b in boys:
-        if b.image == None: b.image = boyimage
-        if b.wp == None: b.wp = wpimage
-
-            
         b.update()
     delay(0.01)
 
 # fill here
 
 def exit():
-    pass
+    close_canvas()
 
 if __name__ == '__main__':
-    import sys
-    current_module = sys.modules[__name__]  
-    open_canvas()
-    game_framework.run(current_module)
-    close_canvas()
+    main()
