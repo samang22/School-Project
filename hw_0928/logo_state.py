@@ -1,45 +1,48 @@
 from pico2d import *
 import game_framework
-# import boys_state
-import title_state
 import time
+import title_state
 
-def enter():
-	global logo,startedOn
-	startedOn = time.time()
-	logo = load_image('../res/kpu_credit.png')
+class Logo:
+    def __init__(self):
+        self.image = load_image('../res/kpu_credit.png')
+        self.count = 0
+        print(self.image)
+    def draw(self):
+        self.image.draw(400, 300)
 
-def exit():
-	global logo
-	del logo
-	#logo = None
-
-def draw():
-	clear_canvas()
-	logo.draw(400, 300)
-	update_canvas()
-
-def update():
-	global startedOn
-	elapsed = time.time() - startedOn
-	print(elapsed)
-	if elapsed >= 1.0:
-		game_framework.change_state(title_state)
-		return
-	delay(0.03)
 
 def handle_events():
-	pass
+    global logo
+    events = get_events()
+    for e in events:
+        if e.type == SDL_QUIT:
+            game_framework.quit()
+        elif e.type == SDL_KEYDOWN:
+            if e.key == SDLK_ESCAPE:
+                game_framework.quit()
 
-def pause():
-	pass
+def enter():
+    global logo
+    open_canvas()
+    logo = Logo()
 
-def resume():
-	pass
+
+def draw():
+    global logo
+    clear_canvas()
+    logo.draw()
+    update_canvas()
+
+def update():
+    delay(0.01);
+    logo.count+=1
+    if logo.count >= 100:
+        game_framework.change_state(title_state)
+
+
+def exit():
+    close_canvas()
 
 if __name__ == '__main__':
-	import sys
-	current_module = sys.modules[__name__]	
-	open_canvas()
-	game_framework.run(current_module)
-	close_canvas()
+    main()
