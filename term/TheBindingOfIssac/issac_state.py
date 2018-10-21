@@ -1,14 +1,15 @@
 from pico2d import *
 
+ISSAC_IMAGE_STOP = 4
+ISSAC_IMAGE_DOWN = 3
+ISSAC_IMAGE_RIGHT = 2
+ISSAC_IMAGE_LEFT = 1
 
-# 가만히 있으면 -1
-ISSAC_STOP = 4
-# 아래나 위로 움직이면 0
-ISSAC_DOWN = 3
-# 오른쪽으로 가면 1
-ISSAC_RIGHT = 2
-# 왼쪽으로 가면 2
-ISSAC_LEFT = 1
+ISSAC_DIRECTION_UP = 4
+ISSAC_DIRECTION_DOWN = 3
+ISSAC_DIRECTION_RIGHT = 2
+ISSAC_DIRECTION_LEFT = 1
+
 
 
 class Issac:
@@ -23,29 +24,55 @@ class Issac:
         self.image_body = load_image('../resource/Issac.png')
 
         self.head_state = 5
-        self.body_state = ISSAC_DOWN
+        self.body_state = ISSAC_IMAGE_DOWN
         
+        self.direction = ISSAC_DIRECTION_DOWN
+        self.isMove = False
+
     def draw(self):
         # 몸
-        self.image_body.clip_draw(self.body_frame * 32, self.body_state * 32, 32, 32, self.x, self.y)
+        if self.isMove == False:
+            self.image_body.clip_draw(0, self.body_state * 32, 32, 32, self.x, self.y)
+        else:
+            self.image_body.clip_draw(self.body_frame * 32, self.body_state * 32, 32, 32, self.x, self.y)
         # 머리
-        self.image_head.clip_draw(self.head_frame * 32, self.head_state * 32, 32, 32, self.x, self.y + 10)
+        self.image_head.clip_draw(self.head_frame * 32, 5 * 32, 32, 32, self.x, self.y + 10)
 
     def update(self):
         #self.head_frame = (self.frame + 1) % 8
         self.body_frame = (self.body_frame + 1) % 8
+        if self.isMove == True:
+            if self.direction == ISSAC_DIRECTION_UP:
+                self.y+=1
+            elif self.direction == ISSAC_DIRECTION_DOWN:
+                self.y-=1
+            elif self.direction == ISSAC_DIRECTION_LEFT:
+                self.x-=1
+            elif self.direction == ISSAC_DIRECTION_RIGHT:
+                self.x+=1
 
     def Move_Up(self):
-        self.y += 1
+        self.body_state = ISSAC_IMAGE_DOWN
+        self.direction = ISSAC_DIRECTION_UP
+        self.isMove = True
 
     def Move_Down(self):
-        self.y -= 1
+        self.body_state = ISSAC_IMAGE_DOWN
+        self.direction = ISSAC_DIRECTION_DOWN
+        self.isMove = True
 
     def Move_Left(self):
-        self.x -= 1
+        self.body_state = ISSAC_IMAGE_LEFT
+        self.direction = ISSAC_DIRECTION_LEFT
+        self.isMove = True
 
     def Move_Right(self):
-        self.x += 1
+        self.body_state = ISSAC_IMAGE_RIGHT
+        self.direction = ISSAC_DIRECTION_RIGHT
+        self.isMove = True
+
+    def Move_Stop(self):
+        self.isMove = False
 
 def handle_events():
     global issac
@@ -66,6 +93,9 @@ def handle_events():
                 issac.Move_Up()
             if e.key == SDLK_DOWN:
                 issac.Move_Down()
+        else:
+            issac.Move_Stop()
+            
 
 def enter():
     global issac
