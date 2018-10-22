@@ -22,8 +22,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="game_framework.py" />
-    <Compile Include="issac_state.py" />
+    <Compile Include="issac.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="play_state.py" />
     <Compile Include="main.py" />
+    <Compile Include="tear.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
