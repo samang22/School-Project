@@ -1,5 +1,6 @@
 from pico2d import *
 import tear
+import bomb
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -53,6 +54,10 @@ class Issac:
         self.tear_shoot_cooltime_count = 0 
         self.isCoolTime = False
         self.eye_flicker = 0
+
+        self.bomb_num = 5
+        self.bomblist = []
+
     def draw(self):
         # 몸
         if self.isMove == False:
@@ -67,7 +72,11 @@ class Issac:
             for t in self.tearlist:
                 t.draw()
 
-
+        # 폭탄
+        if len(self.bomblist) > 0:
+            for b in self.bomblist:
+                b.draw()
+    
     def update(self):
         #self.head_frame = (self.frame + 1) % 8
         self.body_frame = (self.body_frame + 1) % 8
@@ -81,13 +90,18 @@ class Issac:
             if self.isUp == False and self.isDown == True:
                 self.y -= self.speed
 
+        # 눈물(총알)
         if len(self.tearlist) > 0:
             for t in self.tearlist:
                 t.update()
-        
+        # 폭탄
+        if len(self.bomblist) > 0:
+            for b in self.bomblist:
+                b.update()
+
         self.Check_Tear_Collision_Map()
         self.Delete_Tear()
-        self.Cooltime_Count()
+        self.Shoot_Cooltime_Count()
 
 
     def Move_Up(self):
@@ -146,7 +160,7 @@ class Issac:
                 self.Shoot_Right();
             self.isCoolTime = True
 
-    def Cooltime_Count(self):
+    def Shoot_Cooltime_Count(self):
         if self.isCoolTime == True:
             if self.eye_flicker == 0:
                 self.head_frame += 1
@@ -192,4 +206,18 @@ class Issac:
             if t.GetIsPop() == True:
                 self.tearlist.remove(t)
                 print("Delete Tear")
+                break
+
+    def Plant_Bomb(self):
+        if self.bomb_num > 0:
+            tempbomb = bomb.Bomb()
+            tempbomb.SetXY(self.x, self.y)
+            self.bomblist.append(tempbomb)
+            self.bomb_num -= 1
+
+    def Delete_Bomb(self):
+        for b in self.bomblist:
+            if t.IsEnd() == True:
+                self.bomblist.remove(t)
+                print("Delete Bomb")
                 break

@@ -38,6 +38,8 @@ def handle_events():
             if e.key == SDLK_d:
                 play_issac.Shoot(issac.tear.TEAR_DIRECTION_RIGHT)
                 #return
+            if e.key == SDLK_e:
+                play_issac.Plant_Bomb()
 
         elif e.type == SDL_KEYUP:
             if e.key == SDLK_UP:
