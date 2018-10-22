@@ -12,34 +12,49 @@ def handle_events():
             if e.key == SDLK_ESCAPE:
                 #game_framework.change_state(title_state)
                 game_framework.pop_state()
-            if e.key == SDLK_LEFT:
+            elif e.key == SDLK_LEFT:
                 play_issac.Move_Left()
-            if e.key == SDLK_RIGHT:
+                #return
+            elif e.key == SDLK_RIGHT:
                 play_issac.Move_Right()
-            if e.key == SDLK_UP:
+                #return
+            elif e.key == SDLK_UP:
                 play_issac.Move_Up()
-            if e.key == SDLK_DOWN:
+                #return
+            elif e.key == SDLK_DOWN:
                 play_issac.Move_Down()
+                #return
+
             ## 총알 발사
             if e.key == SDLK_w:
-                play_issac.Shoot_Up()
+                play_issac.Shoot(issac.tear.TEAR_DIRECTION_UP)
+                #return
             if e.key == SDLK_a:
-                play_issac.Shoot_Left()
+                play_issac.Shoot(issac.tear.TEAR_DIRECTION_LEFT)
+                #return
             if e.key == SDLK_s:
-                play_issac.Shoot_Down()
+                play_issac.Shoot(issac.tear.TEAR_DIRECTION_DOWN)
+                #return
             if e.key == SDLK_d:
-                play_issac.Shoot_Right()
+                play_issac.Shoot(issac.tear.TEAR_DIRECTION_RIGHT)
+                #return
+
         elif e.type == SDL_KEYUP:
             if e.key == SDLK_UP:
                 play_issac.Move_Up_Off()
+                return
             if e.key == SDLK_DOWN:
                 play_issac.Move_Down_Off()
+                return
             if e.key == SDLK_LEFT:
                 play_issac.Move_Left_Off()
+                return
             if e.key == SDLK_UP:
                 play_issac.Move_Right_Off()
+                return
         else:
             play_issac.Move_Stop()
+            return
             
 
 def enter():
