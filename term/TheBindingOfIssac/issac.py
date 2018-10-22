@@ -1,4 +1,5 @@
 from pico2d import *
+import tear
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -42,7 +43,7 @@ class Issac:
         self.isUp = False
         self.isDown = False
 
-
+        self.tearlist = []
     def draw(self):
         # 몸
         if self.isMove == False:
@@ -52,19 +53,16 @@ class Issac:
         # 머리
         self.image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
 
+        # 눈물(총알)
+        if len(self.tearlist) > 0:
+            for t in self.tearlist:
+                t.draw()
+
+
     def update(self):
         #self.head_frame = (self.frame + 1) % 8
         self.body_frame = (self.body_frame + 1) % 8
         if self.isMove == True:
-            #if self.direction == ISSAC_DIRECTION_UP:
-            #    self.y+=1
-            #elif self.direction == ISSAC_DIRECTION_DOWN:
-            #    self.y-=1
-            #elif self.direction == ISSAC_DIRECTION_LEFT:
-            #    self.x-=1
-            #elif self.direction == ISSAC_DIRECTION_RIGHT:
-            #    self.x+=1
-
             if self.isLeft == True and self.isRight == False:
                 self.x -= 1
             if self.isLeft == False and self.isRight == True:
@@ -73,6 +71,14 @@ class Issac:
                 self.y += 1
             if self.isUp == False and self.isDown == True:
                 self.y -= 1
+
+        if len(self.tearlist) > 0:
+            for t in self.tearlist:
+                t.update()
+        
+        self.Check_Tear_Collision_Map();
+        self.Delete_Tear();
+
 
     def Move_Up(self):
         self.body_state = ISSAC_IMAGE_DOWN
@@ -116,4 +122,33 @@ class Issac:
         self.isUp = False
         self.isLeft = False
         self.isRight = False
+
+    def Shoot_Up(self):
+        temp_tear = tear.Tear()
+        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_UP)
+        self.tearlist.append(temp_tear)
+    def Shoot_Down(self):
+        temp_tear = tear.Tear()
+        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_DOWN)
+        self.tearlist.append(temp_tear)
+    def Shoot_Left(self):
+        temp_tear = tear.Tear()
+        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_LEFT)
+        self.tearlist.append(temp_tear)
+    def Shoot_Right(self):
+        temp_tear = tear.Tear()
+        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_RIGHT)
+        self.tearlist.append(temp_tear)
+
+    def Check_Tear_Collision_Map(self):
+        for t in self.tearlist:
+            if t.GetX() < 100 or t.GetX() > 700 or t.GetY() < 100 or t.GetY() > 500:
+                t.SetPop()
+
+    def Delete_Tear(self):
+        for t in self.tearlist:
+            if t.GetIsPop() == True:
+                self.tearlist.remove(t)
+                print("Delete Tear")
+                break
 

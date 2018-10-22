@@ -14,20 +14,30 @@ def handle_events():
                 game_framework.pop_state()
             if e.key == SDLK_LEFT:
                 play_issac.Move_Left()
-            #else:
-            #    play_issac.Move_Left_Off()
             if e.key == SDLK_RIGHT:
                 play_issac.Move_Right()
-            #else:
-            #    play_issac.Move_Right_Off()
             if e.key == SDLK_UP:
                 play_issac.Move_Up()
-            #else:
-            #    play_issac.Move_Up_Off()
             if e.key == SDLK_DOWN:
                 play_issac.Move_Down()
-            #else:
-            #    play_issac.Move_Down_Off()
+            ## 총알 발사
+            if e.key == SDLK_w:
+                play_issac.Shoot_Up()
+            if e.key == SDLK_a:
+                play_issac.Shoot_Left()
+            if e.key == SDLK_s:
+                play_issac.Shoot_Down()
+            if e.key == SDLK_d:
+                play_issac.Shoot_Right()
+        elif e.type == SDL_KEYUP:
+            if e.key == SDLK_UP:
+                play_issac.Move_Up_Off()
+            if e.key == SDLK_DOWN:
+                play_issac.Move_Down_Off()
+            if e.key == SDLK_LEFT:
+                play_issac.Move_Left_Off()
+            if e.key == SDLK_UP:
+                play_issac.Move_Right_Off()
         else:
             play_issac.Move_Stop()
             
@@ -36,7 +46,6 @@ def enter():
     global play_issac
     open_canvas()
     play_issac = issac.Issac()
-
 
 def draw():
     global play_issac
