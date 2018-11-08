@@ -144,25 +144,7 @@ def handle_events():
     global boy
     #global span
     events = get_events()
-    for e in events:
-        if e.type == SDL_QUIT:
-            game_framework.quit()
-        elif e.type == SDL_KEYDOWN:
-            if e.key == SDLK_ESCAPE:
-                game_framework.pop_state()
-            elif e.key in range(SDLK_1, SDLK_9 + 1):
-                span = 20 * (e.key - SDLK_0)
-
-        #elif e.type == SDL_MOUSEBUTTONDOWN:
-        #    if e.button == SDL_BUTTON_LEFT:
-        #        tx, ty = e.x, 600 - e.y
-        #        for b in boys:
-        #            bx = tx + random.randint(-span, span)
-        #            by = ty + random.randint(-span, span)
-        #            b.waypoints += [ (bx, by) ]
-        #    else:
-        #        for b in boys:
-        #            b.waypoints = []
+    boy.handle_event(events)
 
 def enter():
     global boy, grass
