@@ -28,6 +28,36 @@ ISSAC_SHOOT_UP = 4
 ISSAC_SHOOT_LEFT = 6
 
 
+RIGHT_DOWN, LEFT_DOWN, UP_DOWN, DOWN_DOWN, RIGHT_UP, LEFT_UP, UP_UP, DOWN_UP, W_DOWN, A_DOWN, S_DOWN, D_DOWN, SHIFT_DOWN, E_DOWN = range(14) 
+
+ISSAC_ARROW_BASIC = 0
+
+
+key_event_table = {
+    (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
+    (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
+    (SDL_KEYDOWN, SDLK_UP): UP_DOWN,
+    (SDL_KEYDOWN, SDLK_DOWN): DOWN_DOWN,
+    (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
+    (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+    (SDL_KEYUP, SDLK_UP): UP_UP,
+    (SDL_KEYUP, SDLK_DOWN): DOWN_UP,
+
+    (SDL_KEYDOWN, SDLK_w): W_DOWN,
+    (SDL_KEYDOWN, SDLK_a): A_DOWN,
+    (SDL_KEYDOWN, SDLK_s): S_DOWN,
+    (SDL_KEYDOWN, SDLK_d): D_DOWN,
+
+    (SDL_KEYDOWN, SDLK_LSHIFT): SHIFT_DOWN,
+    (SDL_KEYDOWN, SDLK_e): E_DOWN,
+
+
+    #(SDL_KEYUP, SDLK_w): W_UP,
+    #(SDL_KEYUP, SDLK_a): A_UP,
+    #(SDL_KEYUP, SDLK_s): S_UP,
+    #(SDL_KEYUP, SDLK_d): D_UP,
+}
+
 class Issac:
     def __init__(self):
         print("Creating..")
@@ -57,6 +87,10 @@ class Issac:
 
         self.bomb_num = 5
         self.bomblist = []
+
+        self.life_num = 5
+        self.key_num = 0
+        self.arrow_kind = ISSAC_ARROW_BASIC
 
     def draw(self):
         # 몸
@@ -103,6 +137,42 @@ class Issac:
         self.Delete_Tear()
         self.Shoot_Cooltime_Count()
 
+        if self.isLeft == False and self.isRight == False and self.isUp == False and self.isDown == False:
+            self.Move_Stop()
+ 
+    def handle_event(self, e):
+        if (e.type, e.key) in key_event_table:
+            key_event = key_event_table[(e.type, e.key)]
+            if key_event == RIGHT_DOWN:
+                self.Move_Right()
+            elif key_event == LEFT_DOWN: 
+                self.Move_Left()
+            elif key_event == UP_DOWN:   
+                self.Move_Up()
+            elif key_event == DOWN_DOWN:   
+                self.Move_Down()
+
+            elif key_event == W_DOWN: 
+                self.Shoot_Up()
+            elif key_event == A_DOWN: 
+                self.Shoot_Left()
+            elif key_event == S_DOWN: 
+                self.Shoot_Down()
+            elif key_event == D_DOWN: 
+                self.Shoot_Right()
+
+            elif key_event == RIGHT_UP:  
+                self.Move_Right_Off()
+            elif key_event == LEFT_UP:   
+                self.Move_Left_Off()
+            elif key_event == UP_UP:     
+                self.Move_Up_Off()
+            elif key_event == DOWN_UP:   
+                self.Move_Down_Off()
+            elif key_event == E_DOWN or key_event == SHIFT_DOWN:
+                self.Plant_Bomb()
+        else:
+            a = e
 
     def Move_Up(self):
         self.body_state = ISSAC_IMAGE_DOWN
@@ -121,6 +191,7 @@ class Issac:
         self.isUp = False
     def Move_Down_Off(self):
         self.isDown = False
+        #self.isMove = False
 
     def Move_Left(self):
         self.body_state = ISSAC_IMAGE_LEFT
@@ -130,6 +201,7 @@ class Issac:
         self.isRight = False
     def Move_Left_Off(self):
         self.isLeft = False
+        #self.isMove = False
 
     def Move_Right(self):
         self.body_state = ISSAC_IMAGE_RIGHT
@@ -139,6 +211,7 @@ class Issac:
         self.isRight = True
     def Move_Right_Off(self):
         self.isRight = False
+        #self.isMove = False
 
     def Move_Stop(self):
         self.isMove = False
@@ -221,3 +294,14 @@ class Issac:
                 self.bomblist.remove(t)
                 print("Delete Bomb")
                 break
+    def GetLifeNum(self):
+        return self.life_num
+    def GetBombNum(self):
+        return self.bomb_num
+    def GetKeyNum(self):
+        return self.key_num
+    def GetArrowKind(self):
+        return self.arrow_kind
+
+
+
