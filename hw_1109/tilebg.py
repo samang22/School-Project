@@ -4,7 +4,7 @@ import json
 MARGIN = 25
 class TiledBackground:
     def __init__(self):
-        file = open('desert.json', 'r')
+        file = open('NewMap.json', 'r')
         dict = json.load(file)
         file.close()
         layer = dict["layers"][0]
