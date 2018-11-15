@@ -31,6 +31,9 @@
     <Compile Include="issac.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="meat.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="play_state.py" />
     <Compile Include="main.py" />
     <Compile Include="tear.py">

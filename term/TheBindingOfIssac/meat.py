@@ -1,36 +1,60 @@
 from pico2d import *
 
-FLY_IMAGE_SIZE = 64
+MEAT_IMAGE_SIZE = 64
+MEAT_LIFE_MAX = 10
+MEAT_SLEEP_STANDARD = 5
+MEAT_SLEEP_COUNT_MAX = 150
 
-class Fly:
+class Meat:
     def __init__(self):
         print("Creating..")
         self.x = 400
         self.y = 300
-        self.speed = 2
+        self.speed = 1.5
         self.frame = 0
         # 애니메이션이 너무 빨라 추가한 변수
         self.frame_count = 0
-        self.image = load_image('../resource/Fly1.png')
+        self.image = load_image('../resource/Meat.png')
         self.IsDead = False
         self.issac_x = 0
         self.issac_y = 0
 
-    def draw(self):
-        if self.IsDead:
-            pass
-        else:
-            self.image.clip_draw(self.frame * FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, self.x, self.y)
-            #self.image.clip_draw(0, 0, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, self.x, self.y)
+        self.isSleep = False
+        self.isLeft = False
 
-    
+        self.life = MEAT_LIFE_MAX
+        self.sleep_count = 0
+
+    def draw(self):
+        if self.isSleep:
+            self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, 0, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
+        else:
+            if self.isLeft:
+                self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
+            elif False == self.isLeft:
+                self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE * 2, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
+
     def update(self):
         self.frame_count += 1
         if self.frame_count % 2 == 0:
-            self.frame = (self.frame + 1) % 5
-        
+            self.frame = (self.frame + 1) % 6
+        if self.life <= MEAT_SLEEP_STANDARD:
+            self.isSleep = True
+        #self.frame = (self.frame + 1) % 6
 
         tx, ty = self.issac_x, self.issac_y 
+        if tx > self.x:
+            self.isLeft = False
+        else:
+            self.isLeft = True
+
+        if self.isSleep:
+            self.sleep_count += 1
+            if self.sleep_count > MEAT_SLEEP_COUNT_MAX:
+                self.sleep_count = 0
+                self.isSleep = False
+                self.life = MEAT_LIFE_MAX
+            return
 
         dx, dy = tx - self.x, ty - self.y
         dist = math.sqrt(dx ** 2 + dy ** 2)
@@ -46,3 +70,6 @@ class Fly:
     def SetIssacPos(self, _x, _y):
         self.issac_x = _x
         self.issac_y = _y
+
+    def Hit(self):
+        self.life -= 1
