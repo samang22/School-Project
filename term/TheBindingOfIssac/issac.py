@@ -302,6 +302,10 @@ class Issac:
         return self.key_num
     def GetArrowKind(self):
         return self.arrow_kind
+    def GetX(self):
+        return self.x
+    def GetY(self):
+        return self.y
 
 
 

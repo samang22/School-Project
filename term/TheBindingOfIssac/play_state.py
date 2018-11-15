@@ -1,5 +1,6 @@
 from pico2d import *
 import issac 
+import fly
 import UI
 
 def handle_events():
@@ -13,67 +14,38 @@ def handle_events():
                 game_framework.pop_state()
         else:
             play_issac.handle_event(e)
-        #    elif e.key == SDLK_LEFT:
-        #        play_issac.Move_Left()
-        #        #return
-        #    elif e.key == SDLK_RIGHT:
-        #        play_issac.Move_Right()
-        #        #return
-        #    elif e.key == SDLK_UP:
-        #        play_issac.Move_Up()
-        #        #return
-        #    elif e.key == SDLK_DOWN:
-        #        play_issac.Move_Down()
-        #        #return
-        #    ## 총알 발사
-        #    if e.key == SDLK_w:
-        #        play_issac.Shoot(issac.tear.TEAR_DIRECTION_UP)
-        #        #return
-        #    if e.key == SDLK_a:
-        #        play_issac.Shoot(issac.tear.TEAR_DIRECTION_LEFT)
-        #        #return
-        #    if e.key == SDLK_s:
-        #        play_issac.Shoot(issac.tear.TEAR_DIRECTION_DOWN)
-        #        #return
-        #    if e.key == SDLK_d:
-        #        play_issac.Shoot(issac.tear.TEAR_DIRECTION_RIGHT)
-        #        #return
-        #    if e.key == SDLK_e:
-        #        play_issac.Plant_Bomb()
-        #elif e.type == SDL_KEYUP:
-        #    if e.key == SDLK_UP:
-        #        play_issac.Move_Up_Off()
-        #        return
-        #    if e.key == SDLK_DOWN:
-        #        play_issac.Move_Down_Off()
-        #        return
-        #    if e.key == SDLK_LEFT:
-        #        play_issac.Move_Left_Off()
-        #        return
-        #    if e.key == SDLK_UP:
-        #        play_issac.Move_Right_Off()
-        #        return
-        #else:
-        #    play_issac.Move_Stop()
+
     play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(),play_issac.GetKeyNum(), play_issac.GetArrowKind())
             
 
 def enter():
-    global play_issac, play_UI
+    global play_issac, play_UI, flylist
     open_canvas()
     play_issac = issac.Issac()
     play_UI = UI.UI()
+    
+    flylist = []
+    flylist.append(fly.Fly())
+
     play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(),play_issac.GetKeyNum(), play_issac.GetArrowKind())
 
 def draw():
-    global play_issac, play_UI
+    global play_issac, play_UI, flylist
     clear_canvas()
     play_UI.draw()
     play_issac.draw()
+    if len(flylist) > 0:
+       for f in flylist:
+         f.draw()
     update_canvas()
 
 def update():
     play_issac.update()
+    if len(flylist) > 0:
+       for f in flylist:
+         f.update()
+         f.SetIssacPos(play_issac.GetX(), play_issac.GetY())
+    
     delay(0.03)
 
 # fill here

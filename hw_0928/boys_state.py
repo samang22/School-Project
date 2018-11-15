@@ -26,6 +26,7 @@ class Boy:
         self.isRun = False
         self.isLeft = False
         self.state = 0
+
     def draw(self):
         for wp in self.waypoints:
             self.wp.draw(wp[0], wp[1])
