@@ -4,7 +4,7 @@ FLY_IMAGE_SIZE = 64
 
 class Fly:
     def __init__(self):
-        print("Creating..")
+        print("Creating Fly")
         self.x = 400
         self.y = 300
         self.speed = 2
@@ -12,12 +12,12 @@ class Fly:
         # 애니메이션이 너무 빨라 추가한 변수
         self.frame_count = 0
         self.image = load_image('../resource/Fly1.png')
-        self.IsDead = False
+        self.isDead = False
         self.issac_x = 0
         self.issac_y = 0
 
     def draw(self):
-        if self.IsDead:
+        if self.isDead:
             pass
         else:
             self.image.clip_draw(self.frame * FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, self.x, self.y)
