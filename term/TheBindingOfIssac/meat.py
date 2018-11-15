@@ -7,7 +7,7 @@ MEAT_SLEEP_COUNT_MAX = 150
 
 class Meat:
     def __init__(self):
-        print("Creating Meat")
+        print("Creating..")
         self.x = 400
         self.y = 300
         self.speed = 1.5
@@ -15,7 +15,7 @@ class Meat:
         # 애니메이션이 너무 빨라 추가한 변수
         self.frame_count = 0
         self.image = load_image('../resource/Meat.png')
-        self.isDead = False
+        self.IsDead = False
         self.issac_x = 0
         self.issac_y = 0
 

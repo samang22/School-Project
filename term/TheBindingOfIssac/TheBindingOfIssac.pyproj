@@ -28,9 +28,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="game_framework.py" />
-    <Compile Include="hopper.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="issac.py">
       <SubType>Code</SubType>
     </Compile>
