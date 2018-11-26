@@ -2,7 +2,9 @@ from pico2d import *
 import math
 import random
 
-HOPPER_IMAGE_SIZE = 64
+HOPPER_IMAGE_SIZE = 32
+HOPPER_DRAW_SIZE = 128
+
 HOPPER_LIFE_MAX = 10
 HOPPER_BLEEDING_STANDARD = 5
 #HOPPER_NEW_DESTINATION_COOLTIME = 1.3
@@ -32,7 +34,10 @@ class Hopper:
         if self.isBleeding:
             self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, 0,                 HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
         else:
-            self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
+            #self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE,  HOPPER_DRAW_SIZE, HOPPER_DRAW_SIZE, self.x, self.y)
+            self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE,  HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
+            #self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, HOPPER_DRAW_SIZE,  HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
+            #self.image.clip_draw(10, )
 
     def update(self):
         self.frame_count += 1
