@@ -1,6 +1,7 @@
 from pico2d import *
 import math
 import random
+import config
 
 HOPPER_IMAGE_SIZE = 64
 HOPPER_DRAW_SIZE = 128
@@ -39,6 +40,10 @@ class Hopper:
             #self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, HOPPER_DRAW_SIZE,  HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
             #self.image.clip_draw(10, )
 
+        # BB 그리기
+        if config.draws_bounding_box:
+            draw_rectangle(*self.get_bb())
+
     def update(self):
         self.frame_count += 1
         if self.frame_count % 2 == 0:
@@ -68,4 +73,4 @@ class Hopper:
         self.life -= 1
 
     def get_bb(self):
-        return self.x - (HOPPER_IMAGE_SIZE / 2), self.y - (HOPPER_IMAGE_SIZE / 2),self.x + (HOPPER_IMAGE_SIZE / 2),self.y + (HOPPER_IMAGE_SIZE / 2)
+        return self.x - (HOPPER_IMAGE_SIZE / 2) + 10, self.y - (HOPPER_IMAGE_SIZE / 2),self.x + (HOPPER_IMAGE_SIZE / 2) - 10, self.y + (HOPPER_IMAGE_SIZE / 2)

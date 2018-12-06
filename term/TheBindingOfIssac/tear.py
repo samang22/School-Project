@@ -1,11 +1,11 @@
 from pico2d import *
-
+import config
 TEAR_DIRECTION_UP = 1
 TEAR_DIRECTION_DOWN = 2
 TEAR_DIRECTION_LEFT = 3
 TEAR_DIRECTION_RIGHT = 4
 
-TEAR_SIZE = 64
+TEAR_IMAGE_SIZE = 64
 
 
 
@@ -24,10 +24,14 @@ class Tear:
     def draw(self):
         #터지기 전
         if self.isPopping == False:
-            self.tear_image.clip_draw(0                             , 0, TEAR_SIZE, TEAR_SIZE, self.x, self.y)
+            self.tear_image.clip_draw(0                             , 0, TEAR_IMAGE_SIZE, TEAR_IMAGE_SIZE, self.x, self.y)
         # 터지는 중
         elif self.isPopping == True:
-            self.tear_image.clip_draw(self.tear_frame * TEAR_SIZE   , 0, TEAR_SIZE, TEAR_SIZE, self.x, self.y)
+            self.tear_image.clip_draw(self.tear_frame * TEAR_IMAGE_SIZE   , 0, TEAR_IMAGE_SIZE, TEAR_IMAGE_SIZE, self.x, self.y)
+        # BB 그리기
+        if config.draws_bounding_box:
+            draw_rectangle(*self.get_bb())
+
 
     def update(self):
         if self.tear_frame > 10:
@@ -56,3 +60,5 @@ class Tear:
         return self.x
     def GetY(self):
         return self.y
+    def get_bb(self):
+        return self.x - (TEAR_IMAGE_SIZE / 2), self.y - (TEAR_IMAGE_SIZE / 2),self.x + (TEAR_IMAGE_SIZE / 2),self.y + (TEAR_IMAGE_SIZE / 2)

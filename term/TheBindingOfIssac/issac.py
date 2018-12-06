@@ -1,6 +1,7 @@
 from pico2d import *
 import tear
 import bomb
+import config
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -110,6 +111,9 @@ class Issac:
         if len(self.bomblist) > 0:
             for b in self.bomblist:
                 b.draw()
+        # BB 그리기
+        if config.draws_bounding_box:
+            draw_rectangle(*self.get_bb())
     
     def update(self):
         #self.head_frame = (self.frame + 1) % 8
@@ -308,6 +312,6 @@ class Issac:
         return self.y
 
     def get_bb(self):
-        return self.x - (ISSAC_IMAGE_SIZE / 2), self.y - (ISSAC_IMAGE_SIZE / 2),self.x + (ISSAC_IMAGE_SIZE / 2),self.y + (ISSAC_IMAGE_SIZE / 2)
+        return self.x - (ISSAC_IMAGE_SIZE / 2) + 5, self.y - (ISSAC_IMAGE_SIZE / 2) + 15, self.x + (ISSAC_IMAGE_SIZE / 2) - 5, self.y + (ISSAC_IMAGE_SIZE / 2) + 15
 
 

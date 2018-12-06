@@ -1,4 +1,5 @@
 from pico2d import *
+import config
 
 
 BOMB_SIZE = 64
@@ -25,6 +26,10 @@ class Bomb:
         # 터지는 중
         elif self.isExplode == True:
             self.bomb_explosion_image.clip_draw(self.bomb_explosion_frame * BOMB_EXPLOSION_SIZE, 0, BOMB_EXPLOSION_SIZE, BOMB_EXPLOSION_SIZE, self.x, self.y)
+            # BB 그리기
+            if config.draws_bounding_box:
+                draw_rectangle(*self.get_bb())
+
 
     def update(self):
         self.count +=1
@@ -49,3 +54,5 @@ class Bomb:
         return self.x
     def GetY(self):
         return self.y
+    def get_bb(self):
+        return self.x - (BOMB_EXPLOSION_SIZE / 2), self.y - (BOMB_EXPLOSION_SIZE / 2),self.x + (BOMB_EXPLOSION_SIZE / 2),self.y + (BOMB_EXPLOSION_SIZE / 2)

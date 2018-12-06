@@ -1,4 +1,5 @@
 from pico2d import *
+import config
 
 MEAT_IMAGE_SIZE = 64
 MEAT_LIFE_MAX = 10
@@ -33,6 +34,10 @@ class Meat:
                 self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
             elif False == self.isLeft:
                 self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE * 2, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
+        # BB 그리기
+        if config.draws_bounding_box:
+            draw_rectangle(*self.get_bb())
+
 
     def update(self):
         self.frame_count += 1
@@ -73,5 +78,6 @@ class Meat:
 
     def Hit(self):
         self.life -= 1
+
     def get_bb(self):
-        return self.x - (MEAT_IMAGE_SIZE / 2), self.y - (MEAT_IMAGE_SIZE / 2),self.x + (MEAT_IMAGE_SIZE / 2),self.y + (MEAT_IMAGE_SIZE / 2)
+        return self.x - (MEAT_IMAGE_SIZE / 2) + 15, self.y - (MEAT_IMAGE_SIZE / 2) + 15,self.x + (MEAT_IMAGE_SIZE / 2) - 15,self.y + (MEAT_IMAGE_SIZE / 2) - 15

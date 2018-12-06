@@ -1,4 +1,5 @@
 from pico2d import *
+import config
 
 FLY_IMAGE_SIZE = 64
 
@@ -22,6 +23,8 @@ class Fly:
         else:
             self.image.clip_draw(self.frame * FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, self.x, self.y)
             #self.image.clip_draw(0, 0, FLY_IMAGE_SIZE, FLY_IMAGE_SIZE, self.x, self.y)
+        if config.draws_bounding_box:
+            draw_rectangle(*self.get_bb())
 
     
     def update(self):
@@ -47,4 +50,4 @@ class Fly:
         self.issac_x = _x
         self.issac_y = _y
     def get_bb(self):
-        return self.x - (FLY_IMAGE_SIZE / 2), self.y - (FLY_IMAGE_SIZE / 2),self.x + (FLY_IMAGE_SIZE / 2),self.y + (FLY_IMAGE_SIZE / 2)
+        return self.x - (FLY_IMAGE_SIZE / 2) + 15, self.y - (FLY_IMAGE_SIZE / 2) + 15, self.x + (FLY_IMAGE_SIZE / 2) - 15, self.y + (FLY_IMAGE_SIZE / 2) - 15

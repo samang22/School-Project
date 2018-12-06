@@ -24,6 +24,9 @@
     <Compile Include="bomb.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="config.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="fly.py">
       <SubType>Code</SubType>
     </Compile>
