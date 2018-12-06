@@ -307,5 +307,7 @@ class Issac:
     def GetY(self):
         return self.y
 
+    def get_bb(self):
+        return self.x - (ISSAC_IMAGE_SIZE / 2), self.y - (ISSAC_IMAGE_SIZE / 2),self.x + (ISSAC_IMAGE_SIZE / 2),self.y + (ISSAC_IMAGE_SIZE / 2)
 
 

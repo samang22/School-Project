@@ -73,3 +73,5 @@ class Meat:
 
     def Hit(self):
         self.life -= 1
+    def get_bb(self):
+        return self.x - (MEAT_IMAGE_SIZE / 2), self.y - (MEAT_IMAGE_SIZE / 2),self.x + (MEAT_IMAGE_SIZE / 2),self.y + (MEAT_IMAGE_SIZE / 2)

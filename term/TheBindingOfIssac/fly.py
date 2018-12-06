@@ -46,3 +46,5 @@ class Fly:
     def SetIssacPos(self, _x, _y):
         self.issac_x = _x
         self.issac_y = _y
+    def get_bb(self):
+        return self.x - (FLY_IMAGE_SIZE / 2), self.y - (FLY_IMAGE_SIZE / 2),self.x + (FLY_IMAGE_SIZE / 2),self.y + (FLY_IMAGE_SIZE / 2)

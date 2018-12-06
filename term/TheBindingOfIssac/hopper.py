@@ -66,3 +66,6 @@ class Hopper:
 
     def Hit(self):
         self.life -= 1
+
+    def get_bb(self):
+        return self.x - (HOPPER_IMAGE_SIZE / 2), self.y - (HOPPER_IMAGE_SIZE / 2),self.x + (HOPPER_IMAGE_SIZE / 2),self.y + (HOPPER_IMAGE_SIZE / 2)
