@@ -31,7 +31,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="game_framework.py" />
+    <Compile Include="game_world.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="hopper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ID.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="issac.py">

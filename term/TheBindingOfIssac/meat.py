@@ -1,5 +1,7 @@
 from pico2d import *
 import config
+import game_world
+import ID
 
 MEAT_IMAGE_SIZE = 64
 MEAT_LIFE_MAX = 10
@@ -25,7 +27,9 @@ class Meat:
 
         self.life = MEAT_LIFE_MAX
         self.sleep_count = 0
+        self.isEnd = False
 
+        self.ID = ID.MEAT
     def draw(self):
         if self.isSleep:
             self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, 0, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
@@ -76,8 +80,15 @@ class Meat:
         self.issac_x = _x
         self.issac_y = _y
 
-    def Hit(self):
-        self.life -= 1
+    def Hit(self, damage):
+        self.life -= damage
+        if self.life <= 0:
+            self.isEnd = True
 
     def get_bb(self):
         return self.x - (MEAT_IMAGE_SIZE / 2) + 15, self.y - (MEAT_IMAGE_SIZE / 2) + 15,self.x + (MEAT_IMAGE_SIZE / 2) - 15,self.y + (MEAT_IMAGE_SIZE / 2) - 15
+
+    def GetID(self):
+        return self.ID
+    def GetIsEnd(self):
+        return self.isEnd

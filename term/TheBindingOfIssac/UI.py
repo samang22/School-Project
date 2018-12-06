@@ -1,4 +1,5 @@
 from pico2d import *
+import ID
 
 NUMBER_IMAGE_HEIGHT = 26
 
@@ -26,12 +27,15 @@ class UI:
         self.key_num = 0
         self.arrow_kind = 0
 
+        self.ID = ID.UI
+
     def draw(self):
         self.image.clip_draw(0, 0, 800, 600, self.x, self.y)
         self.bomb_num_image.clip_draw(0,    NUMBER_IMAGE_HEIGHT * (9 - self.bomb_num),    45, 26, self.bomb_num_x,  self.bomb_num_y)
         self.life_num_image.clip_draw(0,    NUMBER_IMAGE_HEIGHT * (9 - self.life_num),    45, 26, self.life_num_x,  self.life_num_y)
         self.key_num_image.clip_draw(0,     NUMBER_IMAGE_HEIGHT * (9 - self.key_num),     45, 26, self.key_num_x,   self.key_num_y)
-        
+    def update(self):
+        pass
 
     def SetBombNum(self, _Num):
         self.bomb_num = _Num
@@ -47,5 +51,6 @@ class UI:
         self.SetLifeNum(_Life)
         self.SetKeyNum(_Key)
         self.SetArrowKind(_Arrow)
-
+    def GetID(self):
+        return self.ID
 

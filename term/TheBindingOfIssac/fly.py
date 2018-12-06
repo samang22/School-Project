@@ -1,11 +1,14 @@
 from pico2d import *
 import config
+import game_world
+import ID
 
 FLY_IMAGE_SIZE = 64
 
 class Fly:
     def __init__(self):
         print("Creating..")
+        self.life = 2
         self.x = 400
         self.y = 300
         self.speed = 2
@@ -16,6 +19,9 @@ class Fly:
         self.IsDead = False
         self.issac_x = 0
         self.issac_y = 0
+        self.ID = ID.FLY
+        self.isEnd = False
+
 
     def draw(self):
         if self.IsDead:
@@ -51,3 +57,13 @@ class Fly:
         self.issac_y = _y
     def get_bb(self):
         return self.x - (FLY_IMAGE_SIZE / 2) + 15, self.y - (FLY_IMAGE_SIZE / 2) + 15, self.x + (FLY_IMAGE_SIZE / 2) - 15, self.y + (FLY_IMAGE_SIZE / 2) - 15
+
+    def GetID(self):
+        return self.ID
+
+    def Hit(self, damage):
+        self.life -= damage
+        if self.life <= 0:
+            self.isEnd = True
+    def GetIsEnd(self):
+        return self.isEnd

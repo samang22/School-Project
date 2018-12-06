@@ -1,0 +1,7 @@
+ISSAC = 0
+TEAR = 1
+BOMB = 2
+MEAT = 3
+FLY = 4
+HOPPER = 5
+UI = 6

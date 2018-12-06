@@ -2,6 +2,8 @@ from pico2d import *
 import math
 import random
 import config
+import game_world
+import ID
 
 HOPPER_IMAGE_SIZE = 64
 HOPPER_DRAW_SIZE = 128
@@ -31,6 +33,9 @@ class Hopper:
         self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
         self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
 
+        self.ID = ID.HOPPER
+
+        self.isEnd = False
     def draw(self):
         if self.isBleeding:
             self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, 0,                 HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
@@ -69,8 +74,16 @@ class Hopper:
         if dy < 0 and self.y < self.ty: self.y = self.ty
         if dy > 0 and self.y > self.ty: self.y = self.ty
 
-    def Hit(self):
-        self.life -= 1
+    def Hit(self, damage):
+        self.life -= damage
+        if self.life <= 0:
+            self.isEnd = True
 
     def get_bb(self):
         return self.x - (HOPPER_IMAGE_SIZE / 2) + 10, self.y - (HOPPER_IMAGE_SIZE / 2),self.x + (HOPPER_IMAGE_SIZE / 2) - 10, self.y + (HOPPER_IMAGE_SIZE / 2)
+
+    def GetID(self):
+        return self.ID
+
+    def GetIsEnd(self):
+        return self.isEnd

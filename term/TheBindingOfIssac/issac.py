@@ -2,6 +2,8 @@ from pico2d import *
 import tear
 import bomb
 import config
+import game_world
+import ID
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -64,7 +66,7 @@ class Issac:
         print("Creating..")
         self.x = 400
         self.y = 300
-        self.speed = 2
+        self.speed = 4
         self.head_frame = 0
         self.body_frame = 0
         self.image_head = load_image('../resource/Issac.png')
@@ -92,6 +94,8 @@ class Issac:
         self.life_num = 5
         self.key_num = 0
         self.arrow_kind = ISSAC_ARROW_BASIC
+
+        self.ID = ID.ISSAC
 
     def draw(self):
         # 몸
@@ -128,19 +132,19 @@ class Issac:
             if self.isUp == False and self.isDown == True:
                 self.y -= self.speed
 
-        # 눈물(총알)
-        if len(self.tearlist) > 0:
-            for t in self.tearlist:
-                t.update()
-        # 폭탄
-        if len(self.bomblist) > 0:
-            for b in self.bomblist:
-                b.update()
+        ## 눈물(총알)
+        #if len(self.tearlist) > 0:
+        #    for t in self.tearlist:
+        #        t.update()
+        ## 폭탄
+        #if len(self.bomblist) > 0:
+        #    for b in self.bomblist:
+        #        b.update()
 
         self.Check_Tear_Collision_Map()
         self.Delete_Tear()
+        self.Delete_Bomb()
         self.Shoot_Cooltime_Count()
-
         if self.isLeft == False and self.isRight == False and self.isUp == False and self.isDown == False:
             self.Move_Stop()
  
@@ -256,20 +260,24 @@ class Issac:
         temp_tear = tear.Tear()
         temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_UP)
         self.tearlist.append(temp_tear)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.head_frame = ISSAC_SHOOT_UP
     def Shoot_Down(self):
         temp_tear = tear.Tear()
         temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_DOWN)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
         self.head_frame = ISSAC_SHOOT_DOWN
     def Shoot_Left(self):
         temp_tear = tear.Tear()
         temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_LEFT)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
         self.head_frame = ISSAC_SHOOT_LEFT
     def Shoot_Right(self):
         temp_tear = tear.Tear()
         temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_RIGHT)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
         self.head_frame = ISSAC_SHOOT_RIGHT
 
@@ -280,7 +288,7 @@ class Issac:
 
     def Delete_Tear(self):
         for t in self.tearlist:
-            if t.GetIsPop() == True:
+            if t.GetIsEnd() == True:
                 self.tearlist.remove(t)
                 print("Delete Tear")
                 break
@@ -290,14 +298,16 @@ class Issac:
             tempbomb = bomb.Bomb()
             tempbomb.SetXY(self.x, self.y)
             self.bomblist.append(tempbomb)
+            game_world.add_object(tempbomb, game_world.LAYER_ISSAC)
             self.bomb_num -= 1
 
     def Delete_Bomb(self):
         for b in self.bomblist:
-            if t.IsEnd() == True:
-                self.bomblist.remove(t)
+            if b.GetIsEnd() == True:
+                self.bomblist.remove(b)
                 print("Delete Bomb")
                 break
+
     def GetLifeNum(self):
         return self.life_num
     def GetBombNum(self):
@@ -314,4 +324,6 @@ class Issac:
     def get_bb(self):
         return self.x - (ISSAC_IMAGE_SIZE / 2) + 5, self.y - (ISSAC_IMAGE_SIZE / 2) + 15, self.x + (ISSAC_IMAGE_SIZE / 2) - 5, self.y + (ISSAC_IMAGE_SIZE / 2) + 15
 
+    def GetID(self):
+        return self.ID
 

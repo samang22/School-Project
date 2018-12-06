@@ -1,5 +1,7 @@
 from pico2d import *
 import config
+import ID
+
 TEAR_DIRECTION_UP = 1
 TEAR_DIRECTION_DOWN = 2
 TEAR_DIRECTION_LEFT = 3
@@ -21,6 +23,9 @@ class Tear:
         self.isPop = False
         self.direction = 0
         self.tear_image = load_image('../resource/Tear.png')
+        self.damage = 1
+
+        self.ID = ID.TEAR
     def draw(self):
         #터지기 전
         if self.isPopping == False:
@@ -52,7 +57,7 @@ class Tear:
     def SetXYDir(self, _x, _y, _dir):
         self.x, self.y, self.direction = _x, _y, _dir
 
-    def GetIsPop(self):
+    def GetIsEnd(self):
         return self.isPop
     def SetPop(self):
         self.isPopping = True
@@ -61,4 +66,12 @@ class Tear:
     def GetY(self):
         return self.y
     def get_bb(self):
-        return self.x - (TEAR_IMAGE_SIZE / 2), self.y - (TEAR_IMAGE_SIZE / 2),self.x + (TEAR_IMAGE_SIZE / 2),self.y + (TEAR_IMAGE_SIZE / 2)
+        if self.isPopping:
+            return 0, 0, 0, 0
+        else:
+            return self.x - (TEAR_IMAGE_SIZE / 2) + 20, self.y - (TEAR_IMAGE_SIZE / 2) + 20, self.x + (TEAR_IMAGE_SIZE / 2) - 20, self.y + (TEAR_IMAGE_SIZE / 2) - 20
+    def GetDamage(self):
+        return self.damage
+
+    def GetID(self):
+        return self.ID
