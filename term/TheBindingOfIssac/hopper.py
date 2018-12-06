@@ -2,7 +2,7 @@ from pico2d import *
 import math
 import random
 
-HOPPER_IMAGE_SIZE = 32
+HOPPER_IMAGE_SIZE = 64
 HOPPER_DRAW_SIZE = 128
 
 HOPPER_LIFE_MAX = 10
