@@ -142,7 +142,8 @@ def update():
             if i.GetID() == ID.TEAR or i.GetID() == ID.BOMB:
                 if collides(i, m):
                     m.Hit(i.GetDamage())
-                    i.SetPop()
+                    if i.GetID() == ID.TEAR:
+                        i.SetPop()
                     print(m.ID)
 
 

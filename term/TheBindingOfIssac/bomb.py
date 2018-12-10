@@ -20,6 +20,7 @@ class Bomb:
         self.isEnd = False
         self.count = 0
         self.ID = ID.BOMB
+        self.damage = 5
 
     def draw(self):
         #터지기 전
@@ -63,3 +64,5 @@ class Bomb:
             return 0, 0, 0, 0
     def GetID(self):
         return self.ID
+    def GetDamage(self):
+        return self.damage
