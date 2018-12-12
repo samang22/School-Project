@@ -2,6 +2,7 @@ from pico2d import *
 import config
 import game_world
 import ID
+import game_framework
 
 MEAT_IMAGE_SIZE = 64
 MEAT_LIFE_MAX = 10
@@ -13,7 +14,7 @@ class Meat:
         print("Creating..")
         self.x = 400
         self.y = 300
-        self.speed = 1.5
+        self.speed = 75
         self.frame = 0
         # 애니메이션이 너무 빨라 추가한 변수
         self.frame_count = 0
@@ -45,6 +46,11 @@ class Meat:
         if config.draws_bounding_box:
             draw_rectangle(*self.get_bb())
 
+    def update_frame(self):
+        self._time += game_framework.frame_time
+        fps = self.fps if hasattr(self, 'fps') else self._fps
+        self.frame = round(self._time * fps) % self._count        
+
 
     def update(self):
         self.frame_count += 1
@@ -71,13 +77,14 @@ class Meat:
         dx, dy = tx - self.x, ty - self.y
         dist = math.sqrt(dx ** 2 + dy ** 2)
         if dist > 0:
-            self.x += self.speed * dx / dist
-            self.y += self.speed * dy / dist
+            self.x += game_framework.frame_time * self.speed * dx / dist
+            self.y += game_framework.frame_time * self.speed * dy / dist
         
             if dx < 0 and self.x < tx: self.x = tx
             if dx > 0 and self.x > tx: self.x = tx
             if dy < 0 and self.y < ty: self.y = ty
             if dy > 0 and self.y > ty: self.y = ty
+
     def SetPos(self, _x, _y):
         self.x = _x
         self.y = _y
@@ -98,5 +105,6 @@ class Meat:
         return self.ID
     def GetIsEnd(self):
         return self.isEnd
+
     def GetDamage(self):
         return self.damage 

@@ -4,6 +4,7 @@ import bomb
 import config
 import game_world
 import ID
+import game_framework
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -69,7 +70,7 @@ class Issac:
         print("Creating..")
         self.x = 400
         self.y = 300
-        self.speed = 4
+        self.speed = 100
         self.head_frame = 0
         self.body_frame = 0
         self.image_head = load_image('../resource/Issac.png')
@@ -146,14 +147,14 @@ class Issac:
         self.body_frame = (self.body_frame + 1) % 8
         if self.isMove == True:
             if self.isLeft == True and self.isRight == False:
-                self.x -= self.speed
+                self.x -= self.speed * game_framework.frame_time
             if self.isLeft == False and self.isRight == True:
-                self.x += self.speed
+                self.x += self.speed * game_framework.frame_time
             if self.isUp == True and self.isDown == False:
-                self.y += self.speed
+                self.y += self.speed * game_framework.frame_time
             if self.isUp == False and self.isDown == True:
-                self.y -= self.speed
-
+                self.y -= self.speed * game_framework.frame_time
+        
         ## 눈물(총알)
         #if len(self.tearlist) > 0:
         #    for t in self.tearlist:

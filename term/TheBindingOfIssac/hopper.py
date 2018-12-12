@@ -4,6 +4,7 @@ import random
 import config
 import game_world
 import ID
+import game_framework
 
 HOPPER_IMAGE_SIZE = 64
 HOPPER_DRAW_SIZE = 128
@@ -17,7 +18,7 @@ class Hopper:
         print("Creating Hopper")
         self.x = 400
         self.y = 300
-        self.speed = 3
+        self.speed = 100
         self.frame = 0
 
         # 애니메이션이 너무 빨라 추가한 변수
@@ -38,6 +39,9 @@ class Hopper:
         self.isEnd = False
 
         self.damage = 1
+
+        self.frame = 0
+        self._time = 0
 
     def draw(self):
         if self.isBleeding:
@@ -69,8 +73,8 @@ class Hopper:
         dx, dy = self.tx - self.x, self.ty - self.y
         dist = math.sqrt(dx ** 2 + dy ** 2)
         if dist > 0:
-            self.x += self.speed * dx / dist
-            self.y += self.speed * dy / dist
+            self.x += game_framework.frame_time * self.speed * dx / dist
+            self.y += game_framework.frame_time * self.speed * dy / dist
         
         if dx < 0 and self.x < self.tx: self.x = self.tx
         if dx > 0 and self.x > self.tx: self.x = self.tx
