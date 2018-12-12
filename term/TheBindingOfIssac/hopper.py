@@ -36,6 +36,9 @@ class Hopper:
         self.ID = ID.HOPPER
 
         self.isEnd = False
+
+        self.damage = 1
+
     def draw(self):
         if self.isBleeding:
             self.image.clip_draw(self.frame * HOPPER_IMAGE_SIZE, 0,                 HOPPER_IMAGE_SIZE, HOPPER_IMAGE_SIZE, self.x, self.y)
@@ -74,6 +77,10 @@ class Hopper:
         if dy < 0 and self.y < self.ty: self.y = self.ty
         if dy > 0 and self.y > self.ty: self.y = self.ty
 
+    def SetPos(self, _x, _y):
+        self.x = _x
+        self.y = _y
+
     def Hit(self, damage):
         self.life -= damage
         if self.life <= 0:
@@ -87,3 +94,5 @@ class Hopper:
 
     def GetIsEnd(self):
         return self.isEnd
+    def GetDamage(self):
+        return self.damage 

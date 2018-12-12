@@ -37,14 +37,14 @@ def background_objects():
     for o in objects[LAYER_BG]:
         yield o
 
-
-
 def objects_at_layer(layer):
 	for o in objects[layer]:
 		yield o
+
 def update():
 	for o in all_objects():
 		o.update()
+
 def draw():
 	for o in all_objects():
 		o.draw()

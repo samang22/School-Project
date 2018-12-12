@@ -58,7 +58,7 @@ class Bomb:
     def GetY(self):
         return self.y
     def get_bb(self):
-        if self.isExplode:
+        if self.isExplode and self.bomb_explosion_frame == 0:
             return self.x - (BOMB_EXPLOSION_SIZE / 2), self.y - (BOMB_EXPLOSION_SIZE / 2),self.x + (BOMB_EXPLOSION_SIZE / 2),self.y + (BOMB_EXPLOSION_SIZE / 2)
         else:
             return 0, 0, 0, 0

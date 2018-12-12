@@ -22,6 +22,8 @@ class Fly:
         self.ID = ID.FLY
         self.isEnd = False
 
+        self.damage = 1
+
 
     def draw(self):
         if self.IsDead:
@@ -52,6 +54,10 @@ class Fly:
             if dy < 0 and self.y < ty: self.y = ty
             if dy > 0 and self.y > ty: self.y = ty
 
+    def SetPos(self, _x, _y):
+        self.x = _x
+        self.y = _y
+
     def SetIssacPos(self, _x, _y):
         self.issac_x = _x
         self.issac_y = _y
@@ -67,3 +73,5 @@ class Fly:
             self.isEnd = True
     def GetIsEnd(self):
         return self.isEnd
+    def GetDamage(self):
+        return self.damage 

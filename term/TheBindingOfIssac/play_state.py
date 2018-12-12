@@ -50,14 +50,9 @@ def enter():
     play_hopper = hopper.Hopper()
     play_meat = meat.Meat()
     
-    #flylist = []
-    #flylist.append(fly.Fly())
-
-#    meatlist = []
-#    meatlist.append(meat.Meat())
-
-#    hopperlist = []
-#    hopperlist.append(hopper.Hopper())
+    play_fly.SetPos(100, 100)
+    play_hopper.SetPos(100, 100)
+    play_meat.SetPos(100, 100)
     
     game_world.add_object(play_issac, game_world.LAYER_ISSAC)
     game_world.add_object(play_fly,game_world.LAYER_MONSTER)
@@ -68,7 +63,7 @@ def enter():
 
 
 
-    play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(),play_issac.GetKeyNum(), play_issac.GetArrowKind())
+    play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(), play_issac.GetKeyNum(), play_issac.GetArrowKind())
 
 def collides(a, b):
     if not hasattr(a, 'get_bb'): return False
@@ -76,7 +71,7 @@ def collides(a, b):
 
     la, ba, ra, ta = a.get_bb()
     lb, bb, rb, tb = b.get_bb()
-    if la > ra: return False
+    if la > rb: return False
     if ra < lb: return False
     if ta < bb: return False
     if ba > tb: return False
@@ -103,24 +98,6 @@ def draw():
     update_canvas()
 
 def update():
-    #play_issac.update()
-    #if len(flylist) > 0:
-    #   for f in flylist:
-    #     f.update()
-    #     f.SetIssacPos(play_issac.GetX(), play_issac.GetY())
-
-    #if len(meatlist) > 0:
-    #   for m in meatlist:
-    #     m.update()
-    #     m.SetIssacPos(play_issac.GetX(), play_issac.GetY())
-    #if len(hopperlist) > 0:
-    #   for h in hopperlist:
-    #     h.update()
-    
-    #for issac_object in game_world.object_at_layer(game_world.LAYER_ISSAC):
-    #    for monster_object in game_world.object_at_layer(game_world.LAYER_MONSTER):
-    #        if 
-
     for o in game_world.all_objects():
         if hasattr(o, "GetIsEnd"):
             if o.GetIsEnd():
@@ -137,6 +114,7 @@ def update():
         o.update()
 
     # 충돌체크
+    # 아이작 눈물, 폭탄
     for i in game_world.issac_objects():
         for m in game_world.monster_objects():
             if i.GetID() == ID.TEAR or i.GetID() == ID.BOMB:
@@ -146,6 +124,14 @@ def update():
                         i.SetPop()
                     print(m.ID)
 
+    # 아이작, 몬스터
+
+    for i in game_world.issac_objects():
+        for m in game_world.monster_objects():
+            if i.GetID() == ID.ISSAC:
+                if collides(i, m):
+                    i.Hit(m.GetDamage())
+                    
 
     delay(0.03)
 

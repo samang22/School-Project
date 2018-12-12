@@ -35,6 +35,9 @@ RIGHT_DOWN, LEFT_DOWN, UP_DOWN, DOWN_DOWN, RIGHT_UP, LEFT_UP, UP_UP, DOWN_UP, W_
 
 ISSAC_ARROW_BASIC = 0
 
+ISSAC_HIT_COUNT = 20
+
+
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -72,6 +75,9 @@ class Issac:
         self.image_head = load_image('../resource/Issac.png')
         self.image_body = load_image('../resource/Issac.png')
 
+        self.hit_image_head = load_image('../resource/issac_hit.png')
+        self.hit_image_body = load_image('../resource/issac_hit.png')
+
         self.head_state = 5
         self.body_state = ISSAC_IMAGE_DOWN
         
@@ -91,20 +97,36 @@ class Issac:
         self.bomb_num = 5
         self.bomblist = []
 
-        self.life_num = 5
+        self.life = 5
         self.key_num = 0
         self.arrow_kind = ISSAC_ARROW_BASIC
 
         self.ID = ID.ISSAC
 
+        self.isHit = False
+        self.hit_count = ISSAC_HIT_COUNT
+
     def draw(self):
-        # 몸
-        if self.isMove == False:
-            self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+
+        if not self.isHit:
+            # 몸
+            if self.isMove == False:
+                self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+            else:
+                self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+            # 머리
+            self.image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
         else:
-            self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-        # 머리
-        self.image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+            # 몸
+            if self.isMove == False:
+                self.hit_image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+            else:
+                self.hit_image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+            # 머리
+            self.hit_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+
+
+
 
         # 눈물(총알)
         if len(self.tearlist) > 0:
@@ -148,6 +170,14 @@ class Issac:
         if self.isLeft == False and self.isRight == False and self.isUp == False and self.isDown == False:
             self.Move_Stop()
  
+
+        # 피격
+        if self.isHit:
+            self.hit_count -= 1
+            if self.hit_count == 0:
+                self.hit_count = ISSAC_HIT_COUNT
+                self.isHit = False
+
     def handle_event(self, e):
         if (e.type, e.key) in key_event_table:
             key_event = key_event_table[(e.type, e.key)]
@@ -308,8 +338,18 @@ class Issac:
                 print("Delete Bomb")
                 break
 
+    
+    def Hit(self, _damage):
+        if self.hit_count != ISSAC_HIT_COUNT:
+            return
+        self.life -= _damage
+        if self.life < 0:
+            self.life = 0
+        self.isHit = True
+        print("issac hit")
+
     def GetLifeNum(self):
-        return self.life_num
+        return self.life
     def GetBombNum(self):
         return self.bomb_num
     def GetKeyNum(self):

@@ -30,6 +30,9 @@ class Meat:
         self.isEnd = False
 
         self.ID = ID.MEAT
+
+        self.damage = 1
+
     def draw(self):
         if self.isSleep:
             self.image.clip_draw(self.frame * MEAT_IMAGE_SIZE, 0, MEAT_IMAGE_SIZE, MEAT_IMAGE_SIZE, self.x, self.y)
@@ -75,6 +78,9 @@ class Meat:
             if dx > 0 and self.x > tx: self.x = tx
             if dy < 0 and self.y < ty: self.y = ty
             if dy > 0 and self.y > ty: self.y = ty
+    def SetPos(self, _x, _y):
+        self.x = _x
+        self.y = _y
 
     def SetIssacPos(self, _x, _y):
         self.issac_x = _x
@@ -92,3 +98,5 @@ class Meat:
         return self.ID
     def GetIsEnd(self):
         return self.isEnd
+    def GetDamage(self):
+        return self.damage 
