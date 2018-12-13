@@ -67,8 +67,8 @@ class Hopper:
             self.isBleeding = True
 
         if self.x == self.tx and self.y == self.ty:
-            self.tx = self.x + 48 * math.cos(math.radians(random.randrange(0, 360 + 1)))
-            self.ty = self.y + 48 * math.sin(math.radians(random.randrange(0, 360 + 1)))
+            self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
+            self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
 
         dx, dy = self.tx - self.x, self.ty - self.y
         dist = math.sqrt(dx ** 2 + dy ** 2)
@@ -82,10 +82,23 @@ class Hopper:
             if dy > 0 and self.y > self.ty: self.y = self.ty
 
         # 방 밖으로 나가지 않게 하기
-        if self.x < 75: self.x = 75
-        if self.x > 725: self.x = 725
-        if self.y > 425: self.y = 425
-        if self.y < 75: self.y = 75
+        if self.x < 70: 
+            self.x = 75
+            self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
+            self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
+        if self.x > 730: 
+            self.x = 725
+            self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
+            self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
+        if self.y > 430:
+            self.y = 425
+            self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
+            self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
+        if self.y < 70:
+            self.y = 75
+            self.tx = self.x + 100 * math.cos(math.radians(random.randrange(0, 360 + 1)))
+            self.ty = self.y + 100 * math.sin(math.radians(random.randrange(0, 360 + 1)))
+
     def SetPos(self, _x, _y):
         self.x = _x
         self.y = _y

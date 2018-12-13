@@ -186,7 +186,7 @@ class Room:
         self.current_room = _Room
     def SetClear(self, _clear):
         self.isClear = _clear
-    def GetClear(self):
+    def GetIsClear(self):
         if Room.CAVE_0 == self.current_room:
             return Room.isDone_CAVE_0
         elif Room.CAVE_1 == self.current_room:

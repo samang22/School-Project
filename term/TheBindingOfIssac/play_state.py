@@ -129,26 +129,27 @@ def ready_game():
             break;
 
 
-
-
-    # 몬스터 생성
-    for d in monster_arr:
-        if d["ID"] == ID.FLY:
-            _monster = fly.Fly(d["x"], d["y"])
-        elif d["ID"] == ID.MEAT:
-            _monster = meat.Meat(d["x"], d["y"])
-        elif d["ID"] == ID.HOPPER:
-            _monster = hopper.Hopper(d["x"], d["y"])
-        game_world.add_object(_monster, game_world.LAYER_MONSTER)
+    for o in game_world.background_objects():
+        if o.GetID() == ID.ROOM:
+            if not o.GetIsClear():    
+                # 몬스터 생성
+                for d in monster_arr:
+                    if d["ID"] == ID.FLY:
+                        _monster = fly.Fly(d["x"], d["y"])
+                    elif d["ID"] == ID.MEAT:
+                        _monster = meat.Meat(d["x"], d["y"])
+                    elif d["ID"] == ID.HOPPER:
+                        _monster = hopper.Hopper(d["x"], d["y"])
+                    game_world.add_object(_monster, game_world.LAYER_MONSTER)
+                # 아이템 미리 생성
+                item_data = item.Item(room_info["item"], 400, 150)
+                game_world.add_object(item_data, game_world.LAYER_BG)
+                break;
 
     # 문 생성
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
             o.SetDoor(room_info["left"], room_info["right"], room_info["up"], room_info["down"], room_info["stage"])
-            # 아이템 미리 생성
-            item_data = item.Item(room_info["item"], 400, 150)
-            game_world.add_object(item_data, game_world.LAYER_BG)
-            break;
 
 #def end_game():
 #    global gameState
@@ -245,7 +246,7 @@ def update():
     # 클리어할 경우 열린문과 충돌 체크후 방 넘어가기
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
-            if o.GetClear() == True:
+            if o.GetIsClear() == True:
                 for i in game_world.issac_objects():
                     if i.GetID() == ID.ISSAC:
                         if door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_OPEN:
@@ -257,7 +258,7 @@ def update():
                                 goto_next_room(room.Room.CABIN_1)
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_3)
-                            i.SetPos(725, 250)
+                            i.SetPos(675, 250)
                         elif door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_LOCK:
                             pass
                         if door_collides(o.right_get_bb(), i) and o.GetRightDoorState() == room.Room.DOOR_OPEN:
@@ -269,27 +270,27 @@ def update():
                                 goto_next_room(room.Room.CABIN_0)
                             elif o.GetRoom() == room.Room.CABIN_3:
                                 goto_next_room(room.Room.CABIN_1)
-                            i.SetPos(75, 250)
+                            i.SetPos(125, 250)
                         if door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_1:
                                 goto_next_room(room.Room.CAVE_2)
                             elif o.GetRoom() == room.Room.CABIN_2:
                                 goto_next_room(room.Room.CABIN_1)
-                            i.SetPos(400, 425)
+                            i.SetPos(400, 125)
 
                         elif door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_LOCK:
                             if i.GetKeyNum() > 0:
                                 i.UseKey()
                                 if o.GetRoom() == room.Room.CAVE_1:
                                     goto_next_room(room.Room.CAVE_2)
-                                    i.SetPos(400, 75)
+                                    i.SetPos(400, 125)
 
                         if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_2:
                                 goto_next_room(room.Room.CAVE_1)
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_2)
-                            i.SetPos(400, 75)
+                            i.SetPos(400, 425)
                         elif door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_LOCK:
                             if i.GetKeyNum() > 0:
                                 i.UseKey()

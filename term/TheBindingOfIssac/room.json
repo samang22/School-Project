@@ -50,8 +50,8 @@
   "cabin_2": {
     "left": 3,
     "right": 3,
-    "up": 3,
-    "down": 1,
+    "up": 1,
+    "down": 3,
     "stage": 3,
     "item": 5
   },

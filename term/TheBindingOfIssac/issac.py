@@ -35,7 +35,8 @@ ISSAC_SHOOT_LEFT = 6
 
 RIGHT_DOWN, LEFT_DOWN, UP_DOWN, DOWN_DOWN, RIGHT_UP, LEFT_UP, UP_UP, DOWN_UP, W_DOWN, A_DOWN, S_DOWN, D_DOWN, SHIFT_DOWN, E_DOWN, SPACE_DOWN, SPACE_UP = range(16) 
 
-
+ISSAC_HIT_IMAGE_WIDTH = 57
+ISSAC_HIT_IMAGE_HEIGHT = 64
 ISSAC_HIT_COUNT = 20
 
 ITEM_IMAGE_SIZE = 32
@@ -89,8 +90,7 @@ class Issac:
         self.razor_image_head = load_image('../resource/Issac_Razor.png')
         self.image_body = load_image('../resource/Issac.png')
 
-        self.hit_image_head = load_image('../resource/issac_hit.png')
-        self.hit_image_body = load_image('../resource/issac_hit.png')
+        self.hit_image = load_image('../resource/hit.png')
 
         self.tear_image = load_image('../resource/Tear_Item.png')
         self.triple_image = load_image('../resource/Triple_Item.png')
@@ -123,6 +123,7 @@ class Issac:
         self.ID = ID.ISSAC
 
         self.isHit = False
+        self.hit_frame = 0
         self.hit_count = ISSAC_HIT_COUNT
 
         self.isGetItem = False
@@ -142,29 +143,20 @@ class Issac:
                 self.razor_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 40)
 
         else:
-
-
-            if not self.isHit: 
-                # 몸
-                if self.isMove == False:
-                    self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-                else:
-                    self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-                # 머리
-                if self.weapon_kind == Issac.TEAR:
-                    self.tear_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
-                elif self.weapon_kind == Issac.TRIPLE:
-                    self.triple_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
-                if self.weapon_kind == Issac.RAZOR:
-                    self.razor_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+            # 몸
+            if self.isMove == False:
+                self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
             else:
-                # 몸
-                if self.isMove == False:
-                    self.hit_image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-                else:
-                    self.hit_image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-                # 머리
-                self.hit_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+                self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+            # 머리
+            if self.weapon_kind == Issac.TEAR:
+                self.tear_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+            elif self.weapon_kind == Issac.TRIPLE:
+                self.triple_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+            if self.weapon_kind == Issac.RAZOR:
+                self.razor_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+            if self.isHit: 
+                self.hit_image.clip_draw(ISSAC_HIT_IMAGE_WIDTH * self.hit_frame, 0, ISSAC_HIT_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 14)
 
 
 
@@ -231,7 +223,10 @@ class Issac:
 
         # 피격
         if self.isHit:
+            self.hit_frame += 1
             self.hit_count -= 1
+            if self.hit_frame == 2:
+                self.hit_frame = 0
             if self.hit_count == 0:
                 self.hit_count = ISSAC_HIT_COUNT
                 self.isHit = False
