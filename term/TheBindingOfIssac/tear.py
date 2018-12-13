@@ -1,6 +1,7 @@
 from pico2d import *
 import config
 import ID
+import game_framework
 
 TEAR_DIRECTION_UP = 1
 TEAR_DIRECTION_DOWN = 2
@@ -17,13 +18,13 @@ class Tear:
         print("Creating Tear")
         self.x = 0
         self.y = 0
-        self.speed = 5
+        self.speed = 175
         self.tear_frame = 0
         self.isPopping = False
         self.isPop = False
         self.direction = 0
         self.tear_image = load_image('../resource/Tear.png')
-        self.damage = 1
+        self.damage = 3
 
         self.ID = ID.TEAR
     def draw(self):
@@ -43,13 +44,13 @@ class Tear:
                 self.isPop = True
         if self.isPopping == False:
             if self.direction == TEAR_DIRECTION_UP:
-                self.y += self.speed
+                self.y += self.speed * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_DOWN:
-                self.y -= self.speed
+                self.y -= self.speed * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_LEFT:
-                self.x -= self.speed
+                self.x -= self.speed * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_RIGHT:
-                self.x += self.speed
+                self.x += self.speed * game_framework.frame_time
         else:
             self.tear_frame += 1
 

@@ -70,7 +70,7 @@ class Issac:
         print("Creating..")
         self.x = 400
         self.y = 300
-        self.speed = 100
+        self.speed = 150
         self.head_frame = 0
         self.body_frame = 0
         self.image_head = load_image('../resource/Issac.png')
@@ -98,7 +98,7 @@ class Issac:
         self.bomb_num = 5
         self.bomblist = []
 
-        self.life = 5
+        self.life = 9
         self.key_num = 0
         self.arrow_kind = ISSAC_ARROW_BASIC
 
@@ -372,3 +372,6 @@ class Issac:
     def GetID(self):
         return self.ID
 
+    def SetPos(self, _x, _y):
+        self.x = _x
+        self.y = _y

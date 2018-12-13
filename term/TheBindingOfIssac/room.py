@@ -38,6 +38,10 @@ class Room:
     DOWN_DOOR_X = 400
     DOWN_DOOR_Y = 50
 
+    STAGE_DOOR_X = 400
+    STAGE_DOOR_Y = 250
+
+
     IMAGE_SIZE = 50
 
     isDone_CAVE_0 = False
@@ -80,12 +84,16 @@ class Room:
         self.lockdoor_left = load_image('../resource/LockDoor_Left.png')
         self.lockdoor_right = load_image('../resource/LockDoor_Right.png')
 
+        self.stagedoor = load_image('../resource/Stage_Door.png')
+        
+
         self.current_room = Room.CAVE_0
 
         self.up_door_state = 0
         self.down_door_state = 0
         self.left_door_state = 0
         self.right_door_state = 0
+        self.stage_door_state = 0
 
         self.ID = ID.ROOM
         self.isClear = False
@@ -143,7 +151,11 @@ class Room:
             self.lockdoor_down.clip_draw(0, 0, Room.DOOR_WIDTH, Room.DOOR_HEIGHT, Room.DOWN_DOOR_X, Room.DOWN_DOOR_Y)
 
 
-        # BB 그리기
+        # 스테이지 도어
+        if self.stage_door_state == Room.DOOR_OPEN:
+            self.stagedoor.clip_draw(0, 0, Room.DOOR_WIDTH, Room.DOOR_HEIGHT, Room.STAGE_DOOR_X, Room.STAGE_DOOR_Y)
+        
+        ## BB 그리기
         #if config.draws_bounding_box:
         #    draw_rectangle(*self.get_bb())
 
@@ -165,6 +177,8 @@ class Room:
     def down_get_bb(self):
         return Room.DOWN_DOOR_X - (Room.IMAGE_SIZE / 2), Room.DOWN_DOOR_Y - (Room.IMAGE_SIZE / 2), Room.DOWN_DOOR_X + (Room.IMAGE_SIZE / 2) - 15, Room.DOWN_DOOR_Y + (Room.IMAGE_SIZE  / 2)
 
+    def stage_get_bb(self):
+        return Room.STAGE_DOOR_X - (Room.IMAGE_SIZE / 2), Room.STAGE_DOOR_Y - (Room.IMAGE_SIZE / 2), Room.STAGE_DOOR_X + (Room.IMAGE_SIZE / 2) - 15, Room.STAGE_DOOR_Y + (Room.IMAGE_SIZE  / 2)
 
     def GetID(self):
         return self.ID
@@ -200,12 +214,15 @@ class Room:
         return self.up_door_state
     def GetDownDoorState(self):
         return self.down_door_state
+    def GetStageDoorState(self):
+        return self.stage_door_state
 
-    def SetDoor(self, _left, _right, _up, _down):
+    def SetDoor(self, _left, _right, _up, _down, _stage):
         self.left_door_state = _left
         self.right_door_state = _right
         self.up_door_state = _up
         self.down_door_state = _down
+        self.stage_door_state = _stage
 
     def RoomClear(self):
         if self.left_door_state == Room.DOOR_CLOSED:
@@ -225,6 +242,7 @@ class Room:
             Room.isDone_CAVE_2 = True
         elif Room.CAVE_3 == self.current_room:
             Room.isDone_CAVE_3 = True
+            self.stage_door_state = Room.DOOR_OPEN
         elif Room.CABIN_0 == self.current_room:
             Room.isDone_CABIN_0 = True
         elif Room.CABIN_1 == self.current_room:
@@ -233,57 +251,3 @@ class Room:
             Room.isDone_CABIN_2 = True
         elif Room.CABIN_3 == self.current_room:
             Room.isDone_CABIN_3 = True
-    
-    def InitDoorWithRoom(self):
-        # 처음 방
-        if self.current_room == Room.CAVE_0:
-            self.left_door_state = Room.DOOR_ABSENCE
-            self.right_door_state = Room.DOOR_CLOSED
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_ABSENCE
-        # 중간 방
-        if self.current_room == Room.CAVE_1:
-            self.left_door_state = Room.DOOR_CLOSED
-            self.right_door_state = Room.DOOR_CLOSED
-            self.up_door_state = Room.DOOR_CLOSED
-            self.down_door_state = Room.DOOR_LOCK
-        # 윗 방
-        if self.current_room == Room.CAVE_2:
-            self.left_door_state = Room.DOOR_ABSENCE
-            self.right_door_state = Room.DOOR_ABSENCE
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_CLOSED
-        # 오른쪽방 (보스방)
-        if self.current_room == Room.CAVE_3:
-            self.left_door_state = Room.DOOR_CLOSED
-            self.right_door_state = Room.DOOR_ABSENCE
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_ABSENCE
-            # 다음 스테이지 문 추가
-
-        # 스테이지 2
-        # 시작 방
-        if self.current_room == Room.CABIN_0:
-            self.left_door_state = Room.DOOR_CLOSED
-            self.right_door_state = Room.DOOR_ABSENCE
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_ABSENCE
-        # 중간 방
-        if self.current_room == Room.CABIN_1:
-            self.left_door_state = Room.DOOR_CLOSED
-            self.right_door_state = Room.DOOR_CLOSED
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_LOCK
-        # 아랫방
-        if self.current_room == Room.CABIN_2:
-            self.left_door_state = Room.DOOR_ABSENCE
-            self.right_door_state = Room.DOOR_ABSENCE
-            self.up_door_state = Room.DOOR_CLOSED
-            self.down_door_state = Room.DOOR_ABSENCE
-        # 왼쪽방 (보스방)
-        if self.current_room == Room.CABIN_3:
-            self.left_door_state = Room.DOOR_ABSENCE
-            self.right_door_state = Room.DOOR_CLOSED
-            self.up_door_state = Room.DOOR_ABSENCE
-            self.down_door_state = Room.DOOR_ABSENCE
-            

@@ -89,6 +89,7 @@ def ready_game():
 
     monster_arr = None
 
+    # 방, 몬스터 정보 받기      
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
             if roomNum == CAVE_0:
@@ -128,7 +129,7 @@ def ready_game():
 
 
 
-    
+    # 몬스터 생성
     for d in monster_arr:
         if d["ID"] == ID.FLY:
             _monster = fly.Fly(d["x"], d["y"])
@@ -138,9 +139,10 @@ def ready_game():
             _monster = hopper.Hopper(d["x"], d["y"])
         game_world.add_object(_monster, game_world.LAYER_MONSTER)
 
+    # 문 생성
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
-            o.SetDoor(room_info["left"], room_info["right"], room_info["up"], room_info["down"])
+            o.SetDoor(room_info["left"], room_info["right"], room_info["up"], room_info["down"], room_info["stage"])
             break;
 
 #def end_game():
@@ -227,18 +229,36 @@ def update():
                                 goto_next_room(room.Room.CAVE_0)
                             elif o.GetRoom() == room.Room.CAVE_3:
                                 goto_next_room(room.Room.CAVE_1)
-
+                            elif o.GetRoom() == room.Room.CABIN_0:
+                                goto_next_room(room.Room.CABIN_1)
+                            elif o.GetRoom() == room.Room.CABIN_1:
+                                goto_next_room(room.Room.CABIN_3)
+                            i.SetPos(725, 250)
                         if door_collides(o.right_get_bb(), i) and o.GetRightDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_0:
                                 goto_next_room(room.Room.CAVE_1)
                             elif o.GetRoom() == room.Room.CAVE_1:
                                 goto_next_room(room.Room.CAVE_3)
+                            elif o.GetRoom() == room.Room.CABIN_1:
+                                goto_next_room(room.Room.CABIN_0)
+                            elif o.GetRoom() == room.Room.CABIN_3:
+                                goto_next_room(room.Room.CABIN_1)
+                            i.SetPos(75, 250)
                         if door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_1:
                                 goto_next_room(room.Room.CAVE_2)
+                            elif o.GetRoom() == room.Room.CABIN_2:
+                                goto_next_room(room.Room.CABIN_1)
+                            i.SetPos(400, 425)
                         if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_2:
                                 goto_next_room(room.Room.CAVE_1)
+                            elif o.GetRoom() == room.Room.CABIN_1:
+                                goto_next_room(room.Room.CABIN_2)
+                            i.SetPos(400, 75)
+                        if door_collides(o.stage_get_bb(), i) and o.GetStageDoorState() == room.Room.DOOR_OPEN:
+                            if o.GetRoom() == room.Room.CAVE_3:
+                                goto_next_room(room.Room.CABIN_0)
     
     room_clear()
 
