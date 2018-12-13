@@ -49,6 +49,9 @@
     </Compile>
     <Compile Include="play_state.py" />
     <Compile Include="main.py" />
+    <Compile Include="razor.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="room.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,3 +1,5 @@
+import ID
+
 objects = [[],[],[]]
 #objects = [[],[]]
 LAYER_BG = 0
@@ -53,6 +55,10 @@ def background_objects():
 def objects_at_layer(layer):
 	for o in objects[layer]:
 		yield o
+def remove_all_item():
+    for i in objects[LAYER_BG]:
+        if i.GetID() == ID.ITEM:
+            objects[LAYER_BG].remove(i)
 
 def update():
 	for o in all_objects():

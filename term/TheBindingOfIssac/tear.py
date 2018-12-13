@@ -13,6 +13,8 @@ TEAR_IMAGE_SIZE = 64
 
 
 class Tear:
+    FLY_FRONT, FLY_RIGHT, FLY_LEFT = range(3) 
+
     #tear_image = None
     def __init__(self):
         print("Creating Tear")
@@ -26,6 +28,7 @@ class Tear:
         self.tear_image = load_image('../resource/Tear.png')
         self.damage = 3
 
+        self.fly = Tear.FLY_FRONT
         self.ID = ID.TEAR
     def draw(self):
         #터지기 전
@@ -45,12 +48,28 @@ class Tear:
         if self.isPopping == False:
             if self.direction == TEAR_DIRECTION_UP:
                 self.y += self.speed * game_framework.frame_time
+                if self.fly == Tear.FLY_LEFT:
+                    self.x -= self.speed / 3 * game_framework.frame_time
+                elif self.fly == Tear.FLY_RIGHT:
+                    self.x += self.speed / 3 * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_DOWN:
                 self.y -= self.speed * game_framework.frame_time
+                if self.fly == Tear.FLY_LEFT:
+                    self.x += self.speed / 3 * game_framework.frame_time
+                elif self.fly == Tear.FLY_RIGHT:
+                    self.x -= self.speed / 3 * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_LEFT:
                 self.x -= self.speed * game_framework.frame_time
+                if self.fly == Tear.FLY_LEFT:
+                    self.y -= self.speed / 3 * game_framework.frame_time
+                elif self.fly == Tear.FLY_RIGHT:
+                    self.y += self.speed / 3 * game_framework.frame_time
             elif self.direction == TEAR_DIRECTION_RIGHT:
                 self.x += self.speed * game_framework.frame_time
+                if self.fly == Tear.FLY_LEFT:
+                    self.y -= self.speed / 3 * game_framework.frame_time
+                elif self.fly == Tear.FLY_RIGHT:
+                    self.y += self.speed / 3 * game_framework.frame_time
         else:
             self.tear_frame += 1
 
@@ -76,3 +95,6 @@ class Tear:
 
     def GetID(self):
         return self.ID
+
+    def SetFly(self, _fly):
+        self.fly = _fly

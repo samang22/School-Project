@@ -1,5 +1,6 @@
 from pico2d import *
 import tear
+import razor
 import bomb
 import config
 import game_world
@@ -69,7 +70,7 @@ key_event_table = {
 
 class Issac:
     HEART = 0
-    BOOM = 1
+    BOMB = 1
     KEY = 2
     TEAR = 3
     TRIPLE = 4
@@ -84,6 +85,8 @@ class Issac:
         self.head_frame = 0
         self.body_frame = 0
         self.tear_image_head = load_image('../resource/Issac.png')
+        self.triple_image_head = load_image('../resource/Issac_Triple.png')
+        self.razor_image_head = load_image('../resource/Issac_Razor.png')
         self.image_body = load_image('../resource/Issac.png')
 
         self.hit_image_head = load_image('../resource/issac_hit.png')
@@ -115,7 +118,7 @@ class Issac:
 
         self.life = 9
         self.key_num = 0
-        self.weapon_kind = Issac.TEAR
+        self.weapon_kind = Issac.RAZOR
 
         self.ID = ID.ISSAC
 
@@ -132,11 +135,11 @@ class Issac:
         if self.isGetItem:
             self.image_body.clip_draw(self.get_item_frame * ISSAC_IMAGE_WIDTH, 0, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x , self.y + 16)
             if self.weapon_kind == Issac.TEAR:
-                self.tear_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x , self.y + 32)
+                self.tear_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x , self.y + 40)
             elif self.weapon_kind == Issac.TRIPLE:
-                self.triple_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 32)
+                self.triple_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 40)
             elif self.weapon_kind == Issac.RAZOR:
-                self.razor_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 32)
+                self.razor_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 40)
 
         else:
 
@@ -148,7 +151,12 @@ class Issac:
                 else:
                     self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
                 # 머리
-                self.tear_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+                if self.weapon_kind == Issac.TEAR:
+                    self.tear_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+                elif self.weapon_kind == Issac.TRIPLE:
+                    self.triple_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+                if self.weapon_kind == Issac.RAZOR:
+                    self.razor_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
             else:
                 # 몸
                 if self.isMove == False:
@@ -239,15 +247,27 @@ class Issac:
                 self.Move_Up()
             elif key_event == DOWN_DOWN:   
                 self.Move_Down()
-
+            
             elif key_event == W_DOWN: 
-                self.Shoot_Up()
+                if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
+                    self.Shoot_Up()
+                elif self.weapon_kind == Issac.RAZOR:
+                    self.Shoot_Razor_Up()
             elif key_event == A_DOWN: 
-                self.Shoot_Left()
+                if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
+                    self.Shoot_Left()
+                elif self.weapon_kind == Issac.RAZOR:
+                    self.Shoot_Razor_Left()
             elif key_event == S_DOWN: 
-                self.Shoot_Down()
+                if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
+                    self.Shoot_Down()
+                elif self.weapon_kind == Issac.RAZOR:
+                    self.Shoot_Razor_Down()
             elif key_event == D_DOWN: 
-                self.Shoot_Right()
+                if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
+                    self.Shoot_Right()
+                elif self.weapon_kind == Issac.RAZOR:
+                    self.Shoot_Razor_Right()
 
             elif key_event == RIGHT_UP:  
                 self.Move_Right_Off()
@@ -314,16 +334,27 @@ class Issac:
 
 
     def Shoot(self, _Dir):
-        if self.isCoolTime == False:
-            if _Dir == tear.TEAR_DIRECTION_UP:
-                self.Shoot_Up();
-            elif _Dir == tear.TEAR_DIRECTION_DOWN:
-                self.Shoot_Down();
-            elif _Dir == tear.TEAR_DIRECTION_LEFT:
-                self.Shoot_Left();
-            elif _Dir == tear.TEAR_DIRECTION_RIGHT:
-                self.Shoot_Right();
-            self.isCoolTime = True
+        if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
+            if self.isCoolTime == False:
+                if _Dir == tear.TEAR_DIRECTION_UP:
+                    self.Shoot_Up();
+                elif _Dir == tear.TEAR_DIRECTION_DOWN:
+                    self.Shoot_Down();
+                elif _Dir == tear.TEAR_DIRECTION_LEFT:
+                    self.Shoot_Left();
+                elif _Dir == tear.TEAR_DIRECTION_RIGHT:
+                    self.Shoot_Right();
+                self.isCoolTime = True
+        elif self.weapon_kind == Issac.RAZOR:
+                if _Dir == tear.TEAR_DIRECTION_UP:
+                    self.Shoot_Razor_Up()
+                elif _Dir == tear.TEAR_DIRECTION_DOWN:
+                    self.Shoot_Razor_Down()
+                elif _Dir == tear.TEAR_DIRECTION_LEFT:
+                    self.Shoot_Razor_Left()
+                elif _Dir == tear.TEAR_DIRECTION_RIGHT:
+                    self.Shoot_Razor_Right()
+
 
     def Shoot_Cooltime_Count(self):
         if self.isCoolTime == True:
@@ -342,27 +373,88 @@ class Issac:
 
     def Shoot_Up(self):
         temp_tear = tear.Tear()
-        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_UP)
+        temp_tear.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_UP)
+        if self.weapon_kind == Issac.TRIPLE:
+            temp_tear1 = tear.Tear()
+            temp_tear1.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_UP)
+            temp_tear1.SetFly(1)
+            temp_tear2 = tear.Tear()
+            temp_tear2.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_UP)
+            temp_tear2.SetFly(2)
+            self.tearlist.append(temp_tear1)
+            self.tearlist.append(temp_tear2)
+            game_world.add_object(temp_tear1, game_world.LAYER_ISSAC)
+            game_world.add_object(temp_tear2, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
         game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.head_frame = ISSAC_SHOOT_UP
     def Shoot_Down(self):
         temp_tear = tear.Tear()
-        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_DOWN)
-        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
+        temp_tear.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_DOWN)
+        if self.weapon_kind == Issac.TRIPLE:
+            temp_tear1 = tear.Tear()
+            temp_tear1.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_DOWN)
+            temp_tear1.SetFly(1)
+            temp_tear2 = tear.Tear()
+            temp_tear2.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_DOWN)
+            temp_tear2.SetFly(2)
+            self.tearlist.append(temp_tear1)
+            self.tearlist.append(temp_tear2)
+            game_world.add_object(temp_tear1, game_world.LAYER_ISSAC)
+            game_world.add_object(temp_tear2, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.head_frame = ISSAC_SHOOT_DOWN
     def Shoot_Left(self):
         temp_tear = tear.Tear()
-        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_LEFT)
-        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
+        temp_tear.SetXYDir(self.x, self.y + 10 + 10, tear.TEAR_DIRECTION_LEFT)
+        if self.weapon_kind == Issac.TRIPLE:
+            temp_tear1 = tear.Tear()
+            temp_tear1.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_LEFT)
+            temp_tear1.SetFly(1)
+            temp_tear2 = tear.Tear()
+            temp_tear2.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_LEFT)
+            temp_tear2.SetFly(2)
+            self.tearlist.append(temp_tear1)
+            self.tearlist.append(temp_tear2)
+            game_world.add_object(temp_tear1, game_world.LAYER_ISSAC)
+            game_world.add_object(temp_tear2, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
         self.head_frame = ISSAC_SHOOT_LEFT
     def Shoot_Right(self):
         temp_tear = tear.Tear()
-        temp_tear.SetXYDir(self.x, self.y, tear.TEAR_DIRECTION_RIGHT)
-        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
+        temp_tear.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_RIGHT)
+        if self.weapon_kind == Issac.TRIPLE:
+            temp_tear1 = tear.Tear()
+            temp_tear1.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_RIGHT)
+            temp_tear1.SetFly(1)
+            temp_tear2 = tear.Tear()
+            temp_tear2.SetXYDir(self.x, self.y + 10, tear.TEAR_DIRECTION_RIGHT)
+            temp_tear2.SetFly(2)
+            self.tearlist.append(temp_tear1)
+            self.tearlist.append(temp_tear2)
+            game_world.add_object(temp_tear1, game_world.LAYER_ISSAC)
+            game_world.add_object(temp_tear2, game_world.LAYER_ISSAC)
         self.tearlist.append(temp_tear)
+        game_world.add_object(temp_tear, game_world.LAYER_ISSAC)
+        self.head_frame = ISSAC_SHOOT_RIGHT
+
+    def Shoot_Razor_Up(self):
+        temp_razor = razor.Razor(razor.Razor.RAZOR_DIRECTION_UP, self.x, self.y + 10)
+        game_world.add_object(temp_razor, game_world.LAYER_ISSAC)
+        self.head_frame = ISSAC_SHOOT_UP
+    def Shoot_Razor_Down(self):
+        temp_razor = razor.Razor(razor.Razor.RAZOR_DIRECTION_DOWN, self.x, self.y + 10)
+        game_world.add_object(temp_razor, game_world.LAYER_ISSAC)
+        self.head_frame = ISSAC_SHOOT_DOWN
+    def Shoot_Razor_Left(self):
+        temp_razor = razor.Razor(razor.Razor.RAZOR_DIRECTION_LEFT, self.x, self.y + 10)
+        game_world.add_object(temp_razor, game_world.LAYER_ISSAC)
+        self.head_frame = ISSAC_SHOOT_LEFT
+    def Shoot_Razor_Right(self):
+        temp_razor = razor.Razor(razor.Razor.RAZOR_DIRECTION_RIGHT, self.x, self.y + 10)
+        game_world.add_object(temp_razor, game_world.LAYER_ISSAC)
         self.head_frame = ISSAC_SHOOT_RIGHT
 
     def Check_Tear_Collision_Map(self):
@@ -434,7 +526,7 @@ class Issac:
             self.key_num += 1
             if self.key_num > 9:
                 self.key_num = 9
-        elif _kind == Issac.BOOM:
+        elif _kind == Issac.BOMB:
             self.bomb_num += 3
             if self.bomb_num > 9:
                 self.bomb_num = 9

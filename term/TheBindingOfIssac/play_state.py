@@ -79,6 +79,7 @@ def ready_game():
     #global gameState
     #gameState = GAMESTATE_READY
     game_world.remove_objects_at_layer(game_world.LAYER_MONSTER)
+    game_world.remove_all_item()                
 
     f = open('monster.json', 'r')
     monster_data = json.load(f)
@@ -206,7 +207,7 @@ def update():
     # 아이작 눈물, 폭탄
     for i in game_world.issac_objects():
         for m in game_world.monster_objects():
-            if i.GetID() == ID.TEAR or i.GetID() == ID.BOMB:
+            if i.GetID() == ID.TEAR or i.GetID() == ID.BOMB or i.GetID() == ID.RAZOR:
                 if collides(i, m):
                     m.Hit(i.GetDamage())
                     if i.GetID() == ID.TEAR:
@@ -219,16 +220,24 @@ def update():
             if i.GetID() == ID.ISSAC:
                 if collides(i, m):
                     i.Hit(m.GetDamage())
+
+
     # 아이작, 아이템
     for i in game_world.issac_objects():
         for m in game_world.bg_objects():
             if i.GetID() == ID.ISSAC and m.GetID() == ID.ITEM:
                 if collides(i, m):
-                    if m.GetItemID() == item.Item.HEART or m.GetItemID() == item.Item.KEY or m.GetItemID() == item.Item.BOOM:
+                    if m.GetItemID() == item.Item.HEART or m.GetItemID() == item.Item.KEY or m.GetItemID() == item.Item.BOMB:
                         i.GetConsumableItem(m.GetItemID())
                         m.SetEnd()
-                    else:
+                    elif m.GetItemID() == item.Item.TEAR or m.GetItemID() == item.Item.TRIPLE or m.GetItemID() == item.Item.RAZOR:
                         if i.GetIsSpaceDown():
+                            if i.GetY() > 250:  
+                                temp_item = item.Item(i.GetWeaponKind(), i.GetX(), i.GetY() - 100)
+                            else:
+                                temp_item = item.Item(i.GetWeaponKind(), i.GetX(), i.GetY() + 100)
+                            temp_item.SetExposed()
+                            game_world.add_object(temp_item, game_world.LAYER_BG)
                             i.SetWeaponItem(m.GetItemID())
                             m.SetEnd()
                             
@@ -273,7 +282,7 @@ def update():
                                 i.UseKey()
                                 if o.GetRoom() == room.Room.CAVE_1:
                                     goto_next_room(room.Room.CAVE_2)
-                                    i.SetPos(400, 425)
+                                    i.SetPos(400, 75)
 
                         if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_2:
@@ -281,6 +290,12 @@ def update():
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_2)
                             i.SetPos(400, 75)
+                        elif door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_LOCK:
+                            if i.GetKeyNum() > 0:
+                                i.UseKey()
+                                if o.GetRoom() == room.Room.CABIN_1:
+                                    goto_next_room(room.Room.CABIN_2)
+                                    i.SetPos(400, 425)
                         if door_collides(o.stage_get_bb(), i) and o.GetStageDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_3:
                                 goto_next_room(room.Room.CABIN_0)
