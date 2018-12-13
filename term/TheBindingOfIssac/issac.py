@@ -32,12 +32,12 @@ ISSAC_SHOOT_UP = 4
 ISSAC_SHOOT_LEFT = 6
 
 
-RIGHT_DOWN, LEFT_DOWN, UP_DOWN, DOWN_DOWN, RIGHT_UP, LEFT_UP, UP_UP, DOWN_UP, W_DOWN, A_DOWN, S_DOWN, D_DOWN, SHIFT_DOWN, E_DOWN = range(14) 
+RIGHT_DOWN, LEFT_DOWN, UP_DOWN, DOWN_DOWN, RIGHT_UP, LEFT_UP, UP_UP, DOWN_UP, W_DOWN, A_DOWN, S_DOWN, D_DOWN, SHIFT_DOWN, E_DOWN, SPACE_DOWN, SPACE_UP = range(16) 
 
-ISSAC_ARROW_BASIC = 0
 
 ISSAC_HIT_COUNT = 20
 
+ITEM_IMAGE_SIZE = 32
 
 
 key_event_table = {
@@ -58,6 +58,8 @@ key_event_table = {
     (SDL_KEYDOWN, SDLK_LSHIFT): SHIFT_DOWN,
     (SDL_KEYDOWN, SDLK_e): E_DOWN,
 
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE_DOWN, 
+    (SDL_KEYUP, SDLK_SPACE): SPACE_UP 
 
     #(SDL_KEYUP, SDLK_w): W_UP,
     #(SDL_KEYUP, SDLK_a): A_UP,
@@ -66,6 +68,14 @@ key_event_table = {
 }
 
 class Issac:
+    HEART = 0
+    BOOM = 1
+    KEY = 2
+    TEAR = 3
+    TRIPLE = 4
+    RAZOR = 5    
+
+
     def __init__(self):
         print("Creating..")
         self.x = 400
@@ -73,11 +83,16 @@ class Issac:
         self.speed = 150
         self.head_frame = 0
         self.body_frame = 0
-        self.image_head = load_image('../resource/Issac.png')
+        self.tear_image_head = load_image('../resource/Issac.png')
         self.image_body = load_image('../resource/Issac.png')
 
         self.hit_image_head = load_image('../resource/issac_hit.png')
         self.hit_image_body = load_image('../resource/issac_hit.png')
+
+        self.tear_image = load_image('../resource/Tear_Item.png')
+        self.triple_image = load_image('../resource/Triple_Item.png')
+        self.razor_image = load_image('../resource/Razor_Item.png')
+
 
         self.head_state = 5
         self.body_state = ISSAC_IMAGE_DOWN
@@ -100,31 +115,48 @@ class Issac:
 
         self.life = 9
         self.key_num = 0
-        self.arrow_kind = ISSAC_ARROW_BASIC
+        self.weapon_kind = Issac.TEAR
 
         self.ID = ID.ISSAC
 
         self.isHit = False
         self.hit_count = ISSAC_HIT_COUNT
 
-    def draw(self):
+        self.isGetItem = False
+        self.get_item_frame = 0
 
-        if not self.isHit:
-            # 몸
-            if self.isMove == False:
-                self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-            else:
-                self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-            # 머리
-            self.image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+        self.isSpaceDown = False
+        self.slow = False
+
+    def draw(self):
+        if self.isGetItem:
+            self.image_body.clip_draw(self.get_item_frame * ISSAC_IMAGE_WIDTH, 0, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x , self.y + 16)
+            if self.weapon_kind == Issac.TEAR:
+                self.tear_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x , self.y + 32)
+            elif self.weapon_kind == Issac.TRIPLE:
+                self.triple_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 32)
+            elif self.weapon_kind == Issac.RAZOR:
+                self.razor_image.clip_draw(0, 0, ITEM_IMAGE_SIZE, ITEM_IMAGE_SIZE, self.x, self.y + 32)
+
         else:
-            # 몸
-            if self.isMove == False:
-                self.hit_image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+
+
+            if not self.isHit: 
+                # 몸
+                if self.isMove == False:
+                    self.image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+                else:
+                    self.image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+                # 머리
+                self.tear_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
             else:
-                self.hit_image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
-            # 머리
-            self.hit_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
+                # 몸
+                if self.isMove == False:
+                    self.hit_image_body.clip_draw(0,                                    self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+                else:
+                    self.hit_image_body.clip_draw(self.body_frame * ISSAC_IMAGE_WIDTH,  self.body_state * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y)
+                # 머리
+                self.hit_image_head.clip_draw(self.head_frame * ISSAC_IMAGE_WIDTH, 5 * ISSAC_IMAGE_SIZE, ISSAC_IMAGE_WIDTH, ISSAC_IMAGE_SIZE, self.x, self.y + 18)
 
 
 
@@ -143,8 +175,21 @@ class Issac:
             draw_rectangle(*self.get_bb())
     
     def update(self):
-        #self.head_frame = (self.frame + 1) % 8
-        self.body_frame = (self.body_frame + 1) % 8
+        # 아이템 획득 모션
+        if self.isGetItem:
+            if self.slow:
+                self.get_item_frame += 1
+                self.slow = False
+            else:
+                self.slow = True
+            if self.get_item_frame > 7:
+                self.get_item_frame = 0
+                self.isGetItem = False
+
+
+        else:
+            #self.head_frame = (self.frame + 1) % 8
+            self.body_frame = (self.body_frame + 1) % 8
         if self.isMove == True:
             if self.isLeft == True and self.isRight == False:
                 self.x -= self.speed * game_framework.frame_time
@@ -214,6 +259,10 @@ class Issac:
                 self.Move_Down_Off()
             elif key_event == E_DOWN or key_event == SHIFT_DOWN:
                 self.Plant_Bomb()
+            elif key_event == SPACE_DOWN:
+                self.isSpaceDown = True
+            elif key_event == SPACE_UP:
+                self.isSpaceDown = False
         else:
             a = e
 
@@ -359,8 +408,8 @@ class Issac:
         return self.bomb_num
     def GetKeyNum(self):
         return self.key_num
-    def GetArrowKind(self):
-        return self.arrow_kind
+    #def GetArrowKind(self):
+    #    return self.weapon_kind
     def GetX(self):
         return self.x
     def GetY(self):
@@ -375,3 +424,34 @@ class Issac:
     def SetPos(self, _x, _y):
         self.x = _x
         self.y = _y
+
+    def GetConsumableItem(self, _kind):
+        if _kind == Issac.HEART:
+            self.life += 2
+            if self.life > 9:
+                self.life = 9
+        elif _kind == Issac.KEY:
+            self.key_num += 1
+            if self.key_num > 9:
+                self.key_num = 9
+        elif _kind == Issac.BOOM:
+            self.bomb_num += 3
+            if self.bomb_num > 9:
+                self.bomb_num = 9
+
+    def SetWeaponItem(self, _kind):
+        if _kind == Issac.TEAR:
+            self.weapon_kind = Issac.TEAR
+        elif _kind == Issac.TRIPLE:
+            self.weapon_kind = Issac.TRIPLE
+        elif _kind == Issac.RAZOR:
+            self.weapon_kind = Issac.RAZOR
+
+        self.isGetItem = True
+    def GetIsSpaceDown(self):
+        return self.isSpaceDown
+    def GetWeaponKind(self):
+        return self.weapon_kind
+    def UseKey(self):
+        if self.key_num > 0:
+            self.key_num -= 1

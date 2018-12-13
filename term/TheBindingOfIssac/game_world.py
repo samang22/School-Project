@@ -38,6 +38,11 @@ def issac_objects():
 def monster_objects():
     for o in objects[LAYER_MONSTER]:
         yield o
+
+def bg_objects():
+    for b in objects[LAYER_BG]:
+        yield b
+
 def GetMonsterNum():
     return len(objects[LAYER_MONSTER])
 

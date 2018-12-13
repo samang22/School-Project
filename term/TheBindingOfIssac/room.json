@@ -4,55 +4,63 @@
     "right": 1,
     "up": 3,
     "down": 3,
-    "stage":  3
+    "stage": 3,
+    "item": 1 
   },
   "cave_1": {
     "left": 1,
     "right": 1,
     "up": 2,
     "down": 3,
-    "stage": 3
+    "stage": 3,
+    "item": 2
   },
   "cave_2": {
     "left": 3,
     "right": 3,
     "up": 3,
     "down": 1,
-    "stage": 3
+    "stage": 3,
+    "item": 4
   },
   "cave_3": {
     "left": 1,
     "right": 3,
     "up": 3,
     "down": 3,
-    "stage": 3
+    "stage": 3,
+    "item": 1
   },
   "cabin_0": {
     "left": 1,
     "right": 3,
     "up": 3,
     "down": 3,
-    "stage": 3
+    "stage": 3,
+    "item": 1
   },
   "cabin_1": {
     "left": 1,
     "right": 1,
     "up": 3,
     "down": 2,
-    "stage": 3
+    "stage": 3,
+    "item": 2
   },
   "cabin_2": {
     "left": 3,
     "right": 3,
     "up": 3,
     "down": 1,
-    "stage": 3
+    "stage": 3,
+    "item": 5
   },
   "cabin_3": {
     "left": 3,
     "right": 1,
     "up": 3,
     "down": 3,
-    "stage": 3
+    "stage": 3,
+    "item": 0
   }
 }

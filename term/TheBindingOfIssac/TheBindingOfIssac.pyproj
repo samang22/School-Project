@@ -43,6 +43,7 @@
     <Compile Include="issac.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="item.py" />
     <Compile Include="meat.py">
       <SubType>Code</SubType>
     </Compile>

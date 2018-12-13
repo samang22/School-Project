@@ -9,6 +9,7 @@ import ID
 import game_framework
 import room
 import json
+import item
 
 GAMESTATE_READY, GAMESTATE_INPLAY, GAMESTATE_PAUSED, GAMESTETE_GAMEOVER = range(4)
 CAVE_0, CAVE_1, CAVE_2, CAVE_3, CABIN_0, CABIN_1, CABIN_2, CABIN_3 = range(8) 
@@ -42,7 +43,7 @@ def handle_events():
     for o in game_world.background_objects():
         for i in game_world.issac_objects():
             if o.GetID() == ID.UI and i.GetID() == ID.ISSAC:
-                o.SetData(i.GetBombNum(), i.GetLifeNum(),i.GetKeyNum(), i.GetArrowKind())
+                o.SetData(i.GetBombNum(), i.GetLifeNum(),i.GetKeyNum(), i.GetWeaponKind())
 
     #play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(),play_issac.GetKeyNum(), play_issac.GetArrowKind())
             
@@ -53,7 +54,7 @@ def enter():
     play_UI = UI.UI()
     play_issac = issac.Issac()
     play_room = room.Room()
-    play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(), play_issac.GetKeyNum(), play_issac.GetArrowKind())
+    play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(), play_issac.GetKeyNum(), play_issac.GetWeaponKind())
     game_world.add_object(play_issac, game_world.LAYER_ISSAC)
     game_world.add_object(play_UI, game_world.LAYER_BG)
     game_world.add_object(play_room, game_world.LAYER_BG)
@@ -88,7 +89,7 @@ def ready_game():
     f.close()
 
     monster_arr = None
-
+    item_data = None
     # 방, 몬스터 정보 받기      
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
@@ -143,6 +144,9 @@ def ready_game():
     for o in game_world.background_objects():
         if o.GetID() == ID.ROOM:
             o.SetDoor(room_info["left"], room_info["right"], room_info["up"], room_info["down"], room_info["stage"])
+            # 아이템 미리 생성
+            item_data = item.Item(room_info["item"], 400, 150)
+            game_world.add_object(item_data, game_world.LAYER_BG)
             break;
 
 #def end_game():
@@ -215,7 +219,18 @@ def update():
             if i.GetID() == ID.ISSAC:
                 if collides(i, m):
                     i.Hit(m.GetDamage())
-
+    # 아이작, 아이템
+    for i in game_world.issac_objects():
+        for m in game_world.bg_objects():
+            if i.GetID() == ID.ISSAC and m.GetID() == ID.ITEM:
+                if collides(i, m):
+                    if m.GetItemID() == item.Item.HEART or m.GetItemID() == item.Item.KEY or m.GetItemID() == item.Item.BOOM:
+                        i.GetConsumableItem(m.GetItemID())
+                        m.SetEnd()
+                    else:
+                        if i.GetIsSpaceDown():
+                            i.SetWeaponItem(m.GetItemID())
+                            m.SetEnd()
                             
 
     # 클리어할 경우 열린문과 충돌 체크후 방 넘어가기
@@ -234,6 +249,8 @@ def update():
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_3)
                             i.SetPos(725, 250)
+                        elif door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_LOCK:
+                            pass
                         if door_collides(o.right_get_bb(), i) and o.GetRightDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_0:
                                 goto_next_room(room.Room.CAVE_1)
@@ -250,6 +267,14 @@ def update():
                             elif o.GetRoom() == room.Room.CABIN_2:
                                 goto_next_room(room.Room.CABIN_1)
                             i.SetPos(400, 425)
+
+                        elif door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_LOCK:
+                            if i.GetKeyNum() > 0:
+                                i.UseKey()
+                                if o.GetRoom() == room.Room.CAVE_1:
+                                    goto_next_room(room.Room.CAVE_2)
+                                    i.SetPos(400, 425)
+
                         if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_2:
                                 goto_next_room(room.Room.CAVE_1)
@@ -269,7 +294,10 @@ def room_clear():
         for o in game_world.background_objects():
             if o.GetID() == ID.ROOM:
                 o.RoomClear()
-                
+                # 아이템 보이게
+                for i in game_world.background_objects():
+                    if i.GetID() == ID.ITEM:
+                        i.SetExposed()
 def exit():
     for o in game_world.all_objects():
         game_world.remove_object(o)
