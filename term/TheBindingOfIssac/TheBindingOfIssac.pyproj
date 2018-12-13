@@ -48,12 +48,19 @@
     </Compile>
     <Compile Include="play_state.py" />
     <Compile Include="main.py" />
+    <Compile Include="room.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tear.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI.py">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="monster.json" />
+    <Content Include="room.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

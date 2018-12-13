@@ -8,6 +8,12 @@ LAYER_MONSTER = 2
 def add_object(o, layer):
 	objects[layer].append(o)
 
+def remove_objects_at_layer(layer):
+	for o in objects[layer]:
+		# print('deleting', o)
+		del o
+	objects[layer] = []
+
 def remove_object(o):
 	for i in range(len(objects)):
 		if o in objects[i]:
@@ -32,6 +38,8 @@ def issac_objects():
 def monster_objects():
     for o in objects[LAYER_MONSTER]:
         yield o
+def GetMonsterNum():
+    return len(objects[LAYER_MONSTER])
 
 def background_objects():
     for o in objects[LAYER_BG]:

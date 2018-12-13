@@ -14,10 +14,10 @@ HOPPER_BLEEDING_STANDARD = 5
 #HOPPER_NEW_DESTINATION_COOLTIME = 1.3
 
 class Hopper:
-    def __init__(self):
+    def __init__(self, _x, _y):
         print("Creating Hopper")
-        self.x = 400
-        self.y = 300
+        self.x = _x
+        self.y = _y
         self.speed = 100
         self.frame = 0
 

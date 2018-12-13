@@ -148,12 +148,16 @@ class Issac:
         if self.isMove == True:
             if self.isLeft == True and self.isRight == False:
                 self.x -= self.speed * game_framework.frame_time
+                if self.x < 75: self.x = 75
             if self.isLeft == False and self.isRight == True:
                 self.x += self.speed * game_framework.frame_time
+                if self.x > 725: self.x = 725
             if self.isUp == True and self.isDown == False:
                 self.y += self.speed * game_framework.frame_time
+                if self.y > 425: self.y = 425
             if self.isUp == False and self.isDown == True:
                 self.y -= self.speed * game_framework.frame_time
+                if self.y < 75: self.y = 75
         
         ## 눈물(총알)
         #if len(self.tearlist) > 0:

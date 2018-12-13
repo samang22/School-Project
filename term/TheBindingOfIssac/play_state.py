@@ -7,6 +7,13 @@ import UI
 import game_world
 import ID
 import game_framework
+import room
+import json
+
+GAMESTATE_READY, GAMESTATE_INPLAY, GAMESTATE_PAUSED, GAMESTETE_GAMEOVER = range(4)
+CAVE_0, CAVE_1, CAVE_2, CAVE_3, CABIN_0, CABIN_1, CABIN_2, CABIN_3 = range(8) 
+gameState = GAMESTATE_READY
+roomNum = CAVE_0
 
 def handle_events():
 #    global play_issac, meatlist, hopperlist
@@ -41,29 +48,105 @@ def handle_events():
             
 
 def enter():
-#    global play_issac, play_UI, flylist, meatlist, hopperlist
-    global play_UI
+    global play_UI, monster_data
     open_canvas()
-    play_issac = issac.Issac()
     play_UI = UI.UI()
-    play_fly = fly.Fly()
-    play_hopper = hopper.Hopper()
-    play_meat = meat.Meat()
-    
-    play_fly.SetPos(100, 100)
-    play_hopper.SetPos(100, 100)
-    play_meat.SetPos(100, 100)
-    
-    game_world.add_object(play_issac, game_world.LAYER_ISSAC)
-    game_world.add_object(play_fly,game_world.LAYER_MONSTER)
-    game_world.add_object(play_hopper,game_world.LAYER_MONSTER)
-    game_world.add_object(play_meat,game_world.LAYER_MONSTER)
-
-    game_world.add_object(play_UI,game_world.LAYER_BG)
-
-
-
+    play_issac = issac.Issac()
+    play_room = room.Room()
     play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(), play_issac.GetKeyNum(), play_issac.GetArrowKind())
+    game_world.add_object(play_issac, game_world.LAYER_ISSAC)
+    game_world.add_object(play_UI, game_world.LAYER_BG)
+    game_world.add_object(play_room, game_world.LAYER_BG)
+    ready_game()
+
+
+
+#def start_game():
+#    global gameState
+#    gameState = GAMESTATE_INPLAY
+
+    #global music_bg
+    # music_bg.set_volume(64)
+    # music_bg.repeat_play()
+
+def goto_next_room(_room):
+    global roomNum
+    roomNum = _room
+    ready_game()
+
+def ready_game():
+    #global gameState
+    #gameState = GAMESTATE_READY
+    game_world.remove_objects_at_layer(game_world.LAYER_MONSTER)
+
+    f = open('monster.json', 'r')
+    monster_data = json.load(f)
+    f.close()
+
+    f = open('room.json', 'r')
+    room_data = json.load(f)
+    f.close()
+
+    monster_arr = None
+
+    for o in game_world.background_objects():
+        if o.GetID() == ID.ROOM:
+            if roomNum == CAVE_0:
+                monster_arr = monster_data['cave_0']    
+                room_info = room_data['cave_0']    
+                o.SetRoom(CAVE_0)
+            elif roomNum == CAVE_1:
+                monster_arr = monster_data['cave_1']
+                room_info = room_data['cave_1']    
+                o.SetRoom(CAVE_1)
+            elif roomNum == CAVE_2:
+                monster_arr = monster_data['cave_2']
+                room_info = room_data['cave_2']    
+                o.SetRoom(CAVE_2)
+            elif roomNum == CAVE_3:
+                monster_arr = monster_data['cave_3']
+                room_info = room_data['cave_3']    
+                o.SetRoom(CAVE_3)
+            elif roomNum == CABIN_0:
+                monster_arr = monster_data['cabin_0']
+                room_info = room_data['cabin_0']    
+                o.SetRoom(CABIN_0)
+            elif roomNum == CABIN_1:
+                monster_arr = monster_data['cabin_1']
+                room_info = room_data['cabin_1']    
+                o.SetRoom(CABIN_1)
+            elif roomNum == CABIN_2:
+                monster_arr = monster_data['cabin_2']
+                room_info = room_data['cabin_2']    
+                o.SetRoom(CABIN_2)
+            elif roomNum == CABIN_3:
+                monster_arr = monster_data['cabin_3']
+                room_info = room_data['cabin_3']    
+                o.SetRoom(CABIN_3)
+            break;
+
+
+
+
+    
+    for d in monster_arr:
+        if d["ID"] == ID.FLY:
+            _monster = fly.Fly(d["x"], d["y"])
+        elif d["ID"] == ID.MEAT:
+            _monster = meat.Meat(d["x"], d["y"])
+        elif d["ID"] == ID.HOPPER:
+            _monster = hopper.Hopper(d["x"], d["y"])
+        game_world.add_object(_monster, game_world.LAYER_MONSTER)
+
+    for o in game_world.background_objects():
+        if o.GetID() == ID.ROOM:
+            o.SetDoor(room_info["left"], room_info["right"], room_info["up"], room_info["down"])
+            break;
+
+#def end_game():
+#    global gameState
+#    gameState = GAMESTETE_GAMEOVER
+
 
 def collides(a, b):
     if not hasattr(a, 'get_bb'): return False
@@ -77,39 +160,39 @@ def collides(a, b):
     if ba > tb: return False
     return True
 
-def draw():
-#    global play_issac, play_UI, flylist, meatlist, hopperlist
-    clear_canvas()
+def door_collides(d, b):
+    if not hasattr(b, 'get_bb'): return False
 
-    #play_UI.draw()
-    #play_issac.draw()
-    #if len(flylist) > 0:
-    #   for f in flylist:
-    #     f.draw()
-    #if len(meatlist) > 0:
-    #   for m in meatlist:
-    #     m.draw()
-    #if len(hopperlist) > 0:
-    #   for h in hopperlist:
-    #     h.draw()
+    ld, bd, rd, td = d
+    lb, bb, rb, tb = b.get_bb()
+    if ld > rb: return False
+    if rd < lb: return False
+    if td < bb: return False
+    if bd > tb: return False
+    return True
+
+def draw():
+    clear_canvas()
 
     for o in game_world.all_objects():
         o.draw()
     update_canvas()
 
 def update():
+    # 삭제될 오브젝트들 삭제
     for o in game_world.all_objects():
         if hasattr(o, "GetIsEnd"):
             if o.GetIsEnd():
                 game_world.remove_object(o)
 
+    # 몬스터들에게 아이작 좌표 전달
     for m in game_world.monster_objects():
         if hasattr(m, "SetIssacPos"):
             for i in game_world.issac_objects():
                 if hasattr(i, "GetX"):
                     m.SetIssacPos(i.GetX(), i.GetY())
 
-
+    # 오브젝트 업데이트
     for o in game_world.all_objects():
         o.update()
 
@@ -125,18 +208,48 @@ def update():
                     print(m.ID)
 
     # 아이작, 몬스터
-
     for i in game_world.issac_objects():
         for m in game_world.monster_objects():
             if i.GetID() == ID.ISSAC:
                 if collides(i, m):
                     i.Hit(m.GetDamage())
-                    
+
+                            
+
+    # 클리어할 경우 열린문과 충돌 체크후 방 넘어가기
+    for o in game_world.background_objects():
+        if o.GetID() == ID.ROOM:
+            if o.GetClear() == True:
+                for i in game_world.issac_objects():
+                    if i.GetID() == ID.ISSAC:
+                        if door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_OPEN:
+                            if o.GetRoom() == room.Room.CAVE_1:
+                                goto_next_room(room.Room.CAVE_0)
+                            elif o.GetRoom() == room.Room.CAVE_3:
+                                goto_next_room(room.Room.CAVE_1)
+
+                        if door_collides(o.right_get_bb(), i) and o.GetRightDoorState() == room.Room.DOOR_OPEN:
+                            if o.GetRoom() == room.Room.CAVE_0:
+                                goto_next_room(room.Room.CAVE_1)
+                            elif o.GetRoom() == room.Room.CAVE_1:
+                                goto_next_room(room.Room.CAVE_3)
+                        if door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_OPEN:
+                            if o.GetRoom() == room.Room.CAVE_1:
+                                goto_next_room(room.Room.CAVE_2)
+                        if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
+                            if o.GetRoom() == room.Room.CAVE_2:
+                                goto_next_room(room.Room.CAVE_1)
+    
+    room_clear()
 
     delay(0.03)
 
-# fill here
-
+def room_clear():
+    if 0 == game_world.GetMonsterNum():
+        for o in game_world.background_objects():
+            if o.GetID() == ID.ROOM:
+                o.RoomClear()
+                
 def exit():
     for o in game_world.all_objects():
         game_world.remove_object(o)

@@ -1,0 +1,50 @@
+{
+  "cave_0": {
+    "left": 3,
+    "right": 1,
+    "up": 3,
+    "down": 3
+  },
+  "cave_1": {
+    "left": 1,
+    "right": 1,
+    "up": 2,
+    "down": 3
+  },
+  "cave_2": {
+    "left": 3,
+    "right": 3,
+    "up": 3,
+    "down": 1
+  },
+  "cave_3": {
+    "left": 1,
+    "right": 3,
+    "up": 3,
+    "down": 3
+  },
+  "cabin_0": {
+    "left": 1,
+    "right": 3,
+    "up": 3,
+    "down": 3
+  },
+  "cabin_1": {
+    "left": 1,
+    "right": 1,
+    "up": 3,
+    "down": 2
+  },
+  "cabin_2": {
+    "left": 3,
+    "right": 3,
+    "up": 3,
+    "down": 1
+  },
+  "cabin_3": {
+    "left": 3,
+    "right": 1,
+    "up": 3,
+    "down": 3
+  }
+}

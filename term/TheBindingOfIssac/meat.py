@@ -10,10 +10,10 @@ MEAT_SLEEP_STANDARD = 5
 MEAT_SLEEP_COUNT_MAX = 150
 
 class Meat:
-    def __init__(self):
+    def __init__(self, _x, _y):
         print("Creating..")
-        self.x = 400
-        self.y = 300
+        self.x = _x
+        self.y = _y
         self.speed = 75
         self.frame = 0
         # 애니메이션이 너무 빨라 추가한 변수
