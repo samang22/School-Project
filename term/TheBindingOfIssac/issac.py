@@ -318,7 +318,7 @@ class Issac:
 
     def Check_Tear_Collision_Map(self):
         for t in self.tearlist:
-            if t.GetX() < 100 or t.GetX() > 700 or t.GetY() < 100 or t.GetY() > 500:
+            if t.GetX() < 75 or t.GetX() > 725 or t.GetY() < 75 or t.GetY() > 425:
                 t.SetPop()
 
     def Delete_Tear(self):

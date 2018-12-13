@@ -75,6 +75,13 @@ class Hopper:
         if dist > 0:
             self.x += game_framework.frame_time * self.speed * dx / dist
             self.y += game_framework.frame_time * self.speed * dy / dist
+        # 방 밖으로 나가지 않게 하기
+        if self.x < 75: self.x = 75
+        if self.x > 725: self.x = 725
+        if self.y > 425: self.y = 425
+        if self.y < 75: self.y = 75
+
+
         
         if dx < 0 and self.x < self.tx: self.x = self.tx
         if dx > 0 and self.x > self.tx: self.x = self.tx

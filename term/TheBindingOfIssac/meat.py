@@ -85,6 +85,13 @@ class Meat:
             if dy < 0 and self.y < ty: self.y = ty
             if dy > 0 and self.y > ty: self.y = ty
 
+        # 방 밖으로 나가지 않게 하기
+        if self.x < 75: self.x = 75
+        if self.x > 725: self.x = 725
+        if self.y > 425: self.y = 425
+        if self.y < 75: self.y = 75
+
+
     def SetPos(self, _x, _y):
         self.x = _x
         self.y = _y
