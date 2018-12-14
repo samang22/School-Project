@@ -10,21 +10,38 @@ import game_framework
 import room
 import json
 import item
+import music
+import ghost
 
-GAMESTATE_READY, GAMESTATE_INPLAY, GAMESTATE_PAUSED, GAMESTETE_GAMEOVER = range(4)
+GAMESTATE_INPLAY, GAMESTATE_WIN, GAMESTATE_LOSE = range(3)
 CAVE_0, CAVE_1, CAVE_2, CAVE_3, CABIN_0, CABIN_1, CABIN_2, CABIN_3 = range(8) 
-gameState = GAMESTATE_READY
+gameState = GAMESTATE_INPLAY
 roomNum = CAVE_0
+
+win_image = None
+lose_image = None
+isGod = False
+
 
 def handle_events():
 #    global play_issac, meatlist, hopperlist
+    global isGod
     events = get_events()
     for e in events:
+        if e.type == SDL_KEYDOWN and (gaemState == GAMESTATE_WIN or gameState == GAMESTATE_LOSE):
+            game_framework.quit()
+            
         if e.type == SDL_QUIT:
             #game_framework.change_state(title_state)
             game_framework.pop_state()
         elif e.type == SDL_KEYDOWN and e.key == SDLK_ESCAPE:
             game_framework.pop_state()
+        elif e.type == SDL_KEYDOWN and e.key == SDLK_g:
+            if isGod:
+               isGod = False
+            else:
+               isGod = True
+
         #elif e.type == SDL_KEYDOWN and e.key == SDLK_m:
         #    if len(meatlist) > 0:
         #        for m in meatlist:
@@ -45,20 +62,25 @@ def handle_events():
             if o.GetID() == ID.UI and i.GetID() == ID.ISSAC:
                 o.SetData(i.GetBombNum(), i.GetLifeNum(),i.GetKeyNum(), i.GetWeaponKind())
 
-    #play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(),play_issac.GetKeyNum(), play_issac.GetArrowKind())
             
 
 def enter():
-    global play_UI, monster_data
-    open_canvas()
+    global play_UI, monster_data, play_music, win_image, lose_image
+    #open_canvas()
     play_UI = UI.UI()
     play_issac = issac.Issac()
     play_room = room.Room()
+    play_music = music.Music()
+
+    win_image = load_image('../resource/Win.png')
+    lose_image = load_image('../resource/Lose.png')
     play_UI.SetData(play_issac.GetBombNum(), play_issac.GetLifeNum(), play_issac.GetKeyNum(), play_issac.GetWeaponKind())
     game_world.add_object(play_issac, game_world.LAYER_ISSAC)
     game_world.add_object(play_UI, game_world.LAYER_BG)
     game_world.add_object(play_room, game_world.LAYER_BG)
+    play_music.PlayStage1BGM()
     ready_game()
+
 
 
 
@@ -66,9 +88,7 @@ def enter():
 #    global gameState
 #    gameState = GAMESTATE_INPLAY
 
-    #global music_bg
-    # music_bg.set_volume(64)
-    # music_bg.repeat_play()
+
 
 def goto_next_room(_room):
     global roomNum
@@ -140,6 +160,8 @@ def ready_game():
                         _monster = meat.Meat(d["x"], d["y"])
                     elif d["ID"] == ID.HOPPER:
                         _monster = hopper.Hopper(d["x"], d["y"])
+                    elif d["ID"] == ID.GHOST:
+                        _monster = ghost.Ghost(d["x"], d["y"])
                     game_world.add_object(_monster, game_world.LAYER_MONSTER)
                 # 아이템 미리 생성
                 item_data = item.Item(room_info["item"], 400, 150)
@@ -187,6 +209,15 @@ def draw():
     update_canvas()
 
 def update():
+    global play_music, isGod, win_image, lose_image
+
+    if gameState == GAMESTATE_WIN:
+        win_image.draw(400, 300)
+        return
+    elif gameState == GAMESTATE_LOSE:
+        lose_image.draw(400, 300)
+        return
+
     # 삭제될 오브젝트들 삭제
     for o in game_world.all_objects():
         if hasattr(o, "GetIsEnd"):
@@ -215,12 +246,13 @@ def update():
                         i.SetPop()
                     print(m.ID)
 
-    # 아이작, 몬스터
-    for i in game_world.issac_objects():
-        for m in game_world.monster_objects():
-            if i.GetID() == ID.ISSAC:
-                if collides(i, m):
-                    i.Hit(m.GetDamage())
+    if not isGod:
+        # 아이작, 몬스터
+        for i in game_world.issac_objects():
+            for m in game_world.monster_objects():
+                if i.GetID() == ID.ISSAC:
+                    if collides(i, m):
+                        i.Hit(m.GetDamage())
 
 
     # 아이작, 아이템
@@ -241,6 +273,7 @@ def update():
                             game_world.add_object(temp_item, game_world.LAYER_BG)
                             i.SetWeaponItem(m.GetItemID())
                             m.SetEnd()
+                            play_music.PlayGetWeaponSound()
                             
 
     # 클리어할 경우 열린문과 충돌 체크후 방 넘어가기
@@ -252,24 +285,32 @@ def update():
                         if door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_1:
                                 goto_next_room(room.Room.CAVE_0)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CAVE_3:
                                 goto_next_room(room.Room.CAVE_1)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CABIN_0:
                                 goto_next_room(room.Room.CABIN_1)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_3)
+                                play_music.PlayBossRoomSound()
                             i.SetPos(675, 250)
                         elif door_collides(o.left_get_bb(), i) and o.GetLeftDoorState() == room.Room.DOOR_LOCK:
                             pass
                         if door_collides(o.right_get_bb(), i) and o.GetRightDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_0:
                                 goto_next_room(room.Room.CAVE_1)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CAVE_1:
                                 goto_next_room(room.Room.CAVE_3)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_0)
+                                play_music.PlayDoorOpenSound()
                             elif o.GetRoom() == room.Room.CABIN_3:
                                 goto_next_room(room.Room.CABIN_1)
+                                play_music.PlayBossRoomSound()
                             i.SetPos(125, 250)
                         if door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_1:
@@ -277,6 +318,7 @@ def update():
                             elif o.GetRoom() == room.Room.CABIN_2:
                                 goto_next_room(room.Room.CABIN_1)
                             i.SetPos(400, 125)
+                            play_music.PlayDoorOpenSound()
 
                         elif door_collides(o.up_get_bb(), i) and o.GetUpDoorState() == room.Room.DOOR_LOCK:
                             if i.GetKeyNum() > 0:
@@ -284,6 +326,7 @@ def update():
                                 if o.GetRoom() == room.Room.CAVE_1:
                                     goto_next_room(room.Room.CAVE_2)
                                     i.SetPos(400, 125)
+                                    play_music.PlayDoorOpenSound()
 
                         if door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_2:
@@ -291,22 +334,30 @@ def update():
                             elif o.GetRoom() == room.Room.CABIN_1:
                                 goto_next_room(room.Room.CABIN_2)
                             i.SetPos(400, 425)
+                            play_music.PlayDoorOpenSound()
                         elif door_collides(o.down_get_bb(), i) and o.GetDownDoorState() == room.Room.DOOR_LOCK:
                             if i.GetKeyNum() > 0:
                                 i.UseKey()
                                 if o.GetRoom() == room.Room.CABIN_1:
                                     goto_next_room(room.Room.CABIN_2)
                                     i.SetPos(400, 425)
+                                    play_music.PlayDoorOpenSound()
                         if door_collides(o.stage_get_bb(), i) and o.GetStageDoorState() == room.Room.DOOR_OPEN:
                             if o.GetRoom() == room.Room.CAVE_3:
                                 goto_next_room(room.Room.CABIN_0)
+                                play_music.PlayStageChangeSound()
+
     
     room_clear()
 
     delay(0.03)
 
 def room_clear():
+    global play_music
     if 0 == game_world.GetMonsterNum():
+        if roomNum == CABIN_3:
+            gameState = GAMESTATE_WIN
+            return
         for o in game_world.background_objects():
             if o.GetID() == ID.ROOM:
                 o.RoomClear()
@@ -314,10 +365,13 @@ def room_clear():
                 for i in game_world.background_objects():
                     if i.GetID() == ID.ITEM:
                         i.SetExposed()
+                        if i.GetItemID() == item.Item.KEY:
+                            play_music.PlayKeyDropSound()
+
 def exit():
     for o in game_world.all_objects():
         game_world.remove_object(o)
-    close_canvas()
+    #close_canvas()
 
 if __name__ == '__main__':
     main()

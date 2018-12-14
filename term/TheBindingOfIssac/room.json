@@ -5,7 +5,7 @@
     "up": 3,
     "down": 3,
     "stage": 3,
-    "item": 1 
+    "item": 2 
   },
   "cave_1": {
     "left": 1,
@@ -13,7 +13,7 @@
     "up": 2,
     "down": 3,
     "stage": 3,
-    "item": 2
+    "item": 0
   },
   "cave_2": {
     "left": 3,
@@ -21,7 +21,7 @@
     "up": 3,
     "down": 1,
     "stage": 3,
-    "item": 5
+    "item": 4
   },
   "cave_3": {
     "left": 1,
@@ -29,7 +29,7 @@
     "up": 3,
     "down": 3,
     "stage": 3,
-    "item": 1
+    "item": 0
   },
   "cabin_0": {
     "left": 1,
@@ -37,7 +37,7 @@
     "up": 3,
     "down": 3,
     "stage": 3,
-    "item": 1
+    "item": 0
   },
   "cabin_1": {
     "left": 1,

@@ -1,4 +1,7 @@
 import game_framework
-import play_state
+import logo_state
+from pico2d import *
 
-game_framework.run(play_state)
+open_canvas()
+game_framework.run(logo_state)
+close_canvas()

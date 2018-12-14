@@ -1,6 +1,7 @@
 from pico2d import *
 import config
 import ID
+import music
 
 BOMB_SIZE = 64
 BOMB_EXPLOSION_SIZE = 192
@@ -21,6 +22,7 @@ class Bomb:
         self.count = 0
         self.ID = ID.BOMB
         self.damage = 5
+        self.bomb_music = music.Music()
 
     def draw(self):
         #터지기 전
@@ -38,6 +40,7 @@ class Bomb:
         self.count +=1
         if self.bomb_frame >= 12:
             self.isExplode = True
+            self.bomb_music.PlayBombExplosionSound() 
         if self.bomb_explosion_frame > 9:
             self.isEnd = True
         if self.isExplode == False:

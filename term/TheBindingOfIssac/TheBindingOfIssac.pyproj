@@ -34,6 +34,9 @@
     <Compile Include="game_world.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ghost.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="hopper.py">
       <SubType>Code</SubType>
     </Compile>
@@ -44,7 +47,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="item.py" />
+    <Compile Include="logo_state.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="meat.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="music.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="play_state.py" />
@@ -56,6 +65,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tear.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="title_state.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI.py">

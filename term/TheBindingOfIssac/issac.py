@@ -6,6 +6,7 @@ import config
 import game_world
 import ID
 import game_framework
+import music
 
 ISSAC_IMAGE_SIZE = 64
 ISSAC_IMAGE_WIDTH = 57
@@ -118,7 +119,7 @@ class Issac:
 
         self.life = 9
         self.key_num = 0
-        self.weapon_kind = Issac.RAZOR
+        self.weapon_kind = Issac.TEAR
 
         self.ID = ID.ISSAC
 
@@ -131,6 +132,9 @@ class Issac:
 
         self.isSpaceDown = False
         self.slow = False
+
+        self.issac_music = music.Music()
+
 
     def draw(self):
         if self.isGetItem:
@@ -246,23 +250,31 @@ class Issac:
             elif key_event == W_DOWN: 
                 if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
                     self.Shoot_Up()
+                    self.issac_music.PlayTearShootSound()
                 elif self.weapon_kind == Issac.RAZOR:
                     self.Shoot_Razor_Up()
+                    self.issac_music.PlayLaserShootSound()
             elif key_event == A_DOWN: 
                 if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
                     self.Shoot_Left()
+                    self.issac_music.PlayTearShootSound()
                 elif self.weapon_kind == Issac.RAZOR:
                     self.Shoot_Razor_Left()
+                    self.issac_music.PlayLaserShootSound()
             elif key_event == S_DOWN: 
                 if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
                     self.Shoot_Down()
+                    self.issac_music.PlayTearShootSound()
                 elif self.weapon_kind == Issac.RAZOR:
                     self.Shoot_Razor_Down()
+                    self.issac_music.PlayLaserShootSound()
             elif key_event == D_DOWN: 
                 if self.weapon_kind == Issac.TEAR or self.weapon_kind == Issac.TRIPLE: 
                     self.Shoot_Right()
+                    self.issac_music.PlayTearShootSound()
                 elif self.weapon_kind == Issac.RAZOR:
                     self.Shoot_Razor_Right()
+                    self.issac_music.PlayLaserShootSound()
 
             elif key_event == RIGHT_UP:  
                 self.Move_Right_Off()
@@ -456,6 +468,7 @@ class Issac:
         for t in self.tearlist:
             if t.GetX() < 75 or t.GetX() > 725 or t.GetY() < 75 or t.GetY() > 425:
                 t.SetPop()
+                self.issac_music.PlayTearPopSound()
 
     def Delete_Tear(self):
         for t in self.tearlist:
@@ -488,6 +501,7 @@ class Issac:
             self.life = 0
         self.isHit = True
         print("issac hit")
+        self.issac_music.PlayIssacHitSound()
 
     def GetLifeNum(self):
         return self.life

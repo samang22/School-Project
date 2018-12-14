@@ -26,7 +26,7 @@ class Tear:
         self.isPop = False
         self.direction = 0
         self.tear_image = load_image('../resource/Tear.png')
-        self.damage = 3
+        self.damage = 5
 
         self.fly = Tear.FLY_FRONT
         self.ID = ID.TEAR

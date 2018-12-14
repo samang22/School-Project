@@ -8,3 +8,4 @@ UI = 6
 ROOM = 7
 ITEM = 8
 RAZOR = 9
+GHOST = 10

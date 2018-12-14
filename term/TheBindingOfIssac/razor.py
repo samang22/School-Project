@@ -24,7 +24,7 @@ class Razor:
         self.y = _y
         self.direction = _direction
         self.razor_image = load_image('../resource/Razor.png')
-        self.damage = 10
+        self.damage = 2
 
         self.exist_count = 10
 
